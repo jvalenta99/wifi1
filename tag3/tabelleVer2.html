@@ -1,0 +1,47 @@
+<!doctype html>
+<html>
+<head>
+ <title>
+ </title>
+ <meta charset="utf-8">
+ <script src = "wifi.funktionen.js">
+
+ </script>
+ <script >
+  window.onload = function () {
+    //var vseblbe, zkopirovat verzi ucitele s 25 elementama;
+    var html, i, j, table, tr, td;
+
+    table = document.createElement( 'table' );
+    table.setAttribute('border',1);
+    e( 'ausgabe' ).appendChild( table );
+
+    for ( i=1; i<=25; i++) {
+      if (i%5 ==1) {
+        tr =document.createElement( 'tr' );
+        table.appendChild( tr );
+      }
+
+      td =document.createElement( 'td' );
+      td.onclick = function (){alert( 'geklickt');};
+      td.innerHTML = i;
+      tr.appendChild( td );
+    }
+
+
+  }
+
+ </script>
+ <style>
+
+ </style>
+</head>
+<body>
+
+  <div id="ausgabe">
+
+  </div>
+
+
+</body>
+</html>

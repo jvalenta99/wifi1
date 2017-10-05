@@ -1,0 +1,53 @@
+<!doctype html>
+<html>
+<head>
+ <title>
+ </title>
+ <meta charset="utf-8">
+ <script src="jquery-3.2.1.min.js"> </script>
+
+ <script >
+
+//console.log (jQuery,$);
+
+console.log($( '#ergebniss').[0]);
+
+  </script>
+ <script>
+
+ window.onload = function() {
+   var count=0;
+   document.getElementById('kalkuliere').onclick = function(event){
+     var zahlin=document.getElementById('zahl').value*1;
+     event.preventDefault();
+     console.log(zahlin);
+
+     document.getElementById('ergebniss').innerHTML="erg: servus";
+     while (zahlin%2 == 0 && zahlin>0){
+       zahlin = zahlin/2;
+       count++;
+     }
+     document.getElementById('ergebniss').innerHTML=count;
+     count=0;
+   }
+
+
+}
+
+ </script>
+
+ <style>
+
+ </style>
+</head>
+<body>
+  <form class="" action="#" method="post">
+    Enter Zahl<input type="text" id="zahl" autocomplete="off"><br>
+    <button id= "kalkuliere">kalkuliere</button>
+  </form>
+<div id="ergebniss">
+pepa
+</div>
+
+</body>
+</html>

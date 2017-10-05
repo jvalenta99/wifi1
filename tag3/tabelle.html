@@ -1,0 +1,75 @@
+<!doctype html>
+<html>
+<head>
+ <title>
+ </title>
+ <meta charset="utf-8">
+ <script src = "wifi.funktionen.js">
+
+ </script>
+ <script >
+  window.onload = function () {
+    //var vseblbe, zkopirovat verzi ucitele s 25 elementama;
+    var html, i, j, table, tr, td, count=0;
+
+    table = document.createElement( 'table' );
+    table.setAttribute('border',1);
+    e( 'ausgabe' ).appendChild( table );
+
+    for ( i=1; i<=25; i++) {
+      if (i%5 ==1) {
+        tr =document.createElement( 'tr' );
+        table.appendChild( tr );
+      }
+
+      td =document.createElement( 'td' );
+      td.onclick = function (){
+        //this; //elment, bei dem Event -Handler ausgelöst wurde
+        //alert( this.innerHTML );
+
+        //this.setAttribute( 'class', 'grau');
+        //alert(this.getAttribute('class'))
+        if (this.getAttribute('class')=='grau') {
+          this.setAttribute( 'class', 'white');
+          count--;
+        } else   {
+          //this.setAttribute( 'class', 'grau');
+          if (count<6) {
+            this.setAttribute( 'class', 'grau');
+            count++;
+          }
+        }
+
+      };
+      td.innerHTML = i;
+      tr.appendChild( td );
+    }
+
+
+  }
+
+ </script>
+ <style>
+  body { user-select: none;}
+  .grau {background: #dddd;}
+  .white {background: white;}
+
+td {
+  cursor:pointer;
+  height: 30px;
+  width: 30px;
+  vertical-align: middle;
+  text-align: center;
+}
+
+ </style>
+</head>
+<body>
+
+  <div id="ausgabe">
+
+  </div>
+
+
+</body>
+</html>

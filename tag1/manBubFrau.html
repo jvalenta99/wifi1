@@ -1,0 +1,70 @@
+<!doctype html>
+<html>
+<head>
+ <title>
+ </title>
+ <meta charset="utf-8">
+ <script>
+ window.onload =function(){
+   document.getElementById('alter')
+
+   document.getElementById('btn').onclick = function( event ){
+     //1. Variablen
+     var ge,al, output='blbost';
+     //2. Eingabe
+     al = document.getElementById( 'alter' ).value*1;
+     ge = document.getElementById( 'geschlecht' ).value;
+
+     if ((al<=18)&&(al>0)){
+       if (ge == 'm'){
+         output='Du bist ein bub';
+       } else if (ge == 'w'){
+         output='Du bist ein Mädchen';
+       }
+     } else if((al>18)&&(al<120)){
+       if (ge == 'm'){
+         output='Du bist ein Man';
+       } else if (ge == 'w'){
+         output='Du bist eine Frau';
+       }
+
+
+     } else if ((al < 0)||(al > 120)){
+       output =ge + ' falscher alter wurde eingegeben';
+     } else if ((ge !== 'm') && (ge !== 'f')){
+       output = ge + 'geshlecht falsch definiert: m=männlich, w=weiblich';
+     }
+
+
+     document.getElementById('ausgabe').innerHTML =  output;
+
+
+     event.preventDefault(); //verhindert standardfunktion formula senden
+
+
+
+
+
+   } //btn. onclick
+ } //onload
+
+ </script>
+ <script >
+
+ </script>
+ <style>
+
+ </style>
+</head>
+<body>
+  <h1>Man, Frau usw.</h1>
+  <form method="post" action="?">
+  	Alter: <input type="text" id="alter"><br>
+  	Geschlecht: <input type="text" id="geschlecht"><br>
+  	<button id="btn">Was bist du?</button>
+  </form>
+  <div id="ausgabe">nic</div>
+
+
+</body>
+</html>

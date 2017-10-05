@@ -1,0 +1,128 @@
+<!doctype html>
+<html>
+<head>
+	<title></title>
+	<meta charset="utf-8">
+	<script src="wifi.funktionen.js"></script>
+	<script>
+
+	var counter=0, i;
+
+	var verteilen = function (n)	{
+		var zufStart = [];
+		for (var i = 0; i < n; i++) {
+			for (var j = 0; j < array.length; j++) {
+				if (isNaN(zufStart[j])){
+					zufStart[j]=voc[j];
+				}
+			}
+
+			var temp=zufallsZahl(0,n);
+
+		}
+	}
+
+	var zufallsZahl = function( von, bis ) {
+		var number;
+		number = Math.floor( Math.random() * (bis-von+1) ) + von;
+		return number;
+	}
+
+	var deleteValueFromArray = function( value ) {
+		zahlen.splice( zahlen.indexOf( value ), 1 );
+	}
+
+	var closeCards = function(){
+		var closeit=document.getElementsByClassName('flipped');
+		for (i = 0; i < closeit.length; i++) {
+			console.log('zum Schliessen: ' + closeit.length);
+		closeit[i].classList.remove('flipped');
+	  }
+		counter=0;//for
+	}
+
+	var zelleKlicken = function() {
+		console.log('wurde geklickt');
+
+		if (counter<2){
+			counter++;
+		} else if (counter>1){
+			closeCards();
+		}
+		console.log(counter);
+		this.classList.toggle("flipped");
+	}
+
+	window.onload = function() {
+		var voc = [
+				['dog','Hund'],
+				['cat','Katze'],
+				['snake','Schlange'],
+				['lion','Löwe'],
+				['mouse','Maus'],
+				['bug','Käfer'],
+				['ant','Ameise'],
+				['horse','Pferd'],
+				['cow','Kuh'],
+				['sheep','Schaf']
+			];
+
+		var source=[] ;
+
+//reformatieren voc
+		var i;
+		for ( i=0;i<20;i=i+2){
+
+	  source[i]=new Array();
+	  source[i+1]=new Array();
+	  source[i][0]=i/2;
+	  source[i][1]=voc[i/2][0];
+	  source[i+1][0]=i/2;
+	  source[i+1][1]=voc[i/2][1];
+
+		}
+
+		var fl,i;
+
+		for ( i=0; i<20; i++ ) {
+
+			fl=document.createElement('div');
+			fl.classList.add('flipper');
+			fl.appendChild(document.createElement( 'div' ));
+			fl.appendChild(document.createElement( 'div' ));
+			fl.childNodes[0].innerHTML=source[i][1];
+			fl.childNodes[1].innerHTML='back';
+			//fl.childNodes[0].onclick = zelleKlicken;
+			fl.onclick = zelleKlicken;
+			e( 'game' ).appendChild( fl );
+		}
+	}
+
+</script>
+	<style>
+		#game { width:600px; border:1px solid #000; padding:1px; background:#ddd; font-family:Arial; }
+		#game .flipper { float:left;width:100px; height:100px; position:relative; margin:10px; }
+		#game .flipper div { transition:transform 1s; position:absolute; top:0; left:0; backface-visibility: hidden; width:100px; height:100px; border:1px solid #000; background:#fff; text-align:center; line-height:95px; }
+		#game::after { content:''; display:block; clear:left;  }
+		#game .flipper { perspective: 1000; }
+		#game div > div:nth-child(1) { transform: rotateY(180deg); }
+		#game div > div:nth-child(2) { transform: rotateY(0deg); background:#aaa; color:#fff;  }
+		#game div.flipped { }
+		#game div.flipped  > div:nth-child(1) { transform: rotateY(0deg); }
+		#game div.flipped  > div:nth-child(2) { transform: rotateY(180deg); }
+		#game div.done > div:nth-child(1)  { transition:all 0.5s; background-color: green; transform:rotateY(0deg) scale(0.9); }
+		</style>
+</head>
+<body>
+	<div id="game">
+
+		<!-- Inhalte dynamisch erzeugen
+		<div class="flipper" >
+			<div>FRONT</div>
+			<div>BACK</div>-->
+	</div>
+
+
+
+</body>
+</html>

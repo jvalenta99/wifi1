@@ -1,0 +1,154 @@
+<!doctype html>
+<html>
+<head>
+	<title></title>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<script src="wifi.funktionen.js"></script>
+	<script>
+var alleBenutzer = [];
+
+var opentabs = function() {
+
+
+}
+window.onload = function() {
+
+	e('home').style.display = 'block';
+	document.getElementsByTagName('a')[0].parentNode.style.background = '#fff';
+	document.getElementsByTagName('a')[0].parentNode.style.borderBottomColor = '#fff';
+
+	e('input').style.display = 'none';
+	e('output').style.display = 'none';
+
+	document.getElementsByTagName('a')[0].onclick = function( event ) {
+		e('home').style.display = 'block';
+		this.parentNode.style.background = '#fff';
+		this.parentNode.style.borderBottomColor = '#fff';
+
+		e('input').style.display = 'none';
+		e('output').style.display = 'none';
+
+	}
+
+	document.getElementsByTagName('a')[1].onclick = function( event ) {
+		e('home').style.display = 'none';
+		this.parentNode.style.background = '#fff';
+		this.parentNode.style.borderBottomColor = '#fff';
+		e('input').style.display = 'block';
+		e('output').style.display = 'none';
+	}
+
+	document.getElementsByTagName('a')[2].onclick = function( event ) {
+		e('home').style.display = 'none';
+		this.parentNode.style.background = '#fff';
+		this.parentNode.style.borderBottomColor = '#fff';
+		document.getElementsByTagName('a')[0].style.background = 'grau';
+document.getElementsByTagName('a')[0].style.borderBottomColor = 'black';
+
+		e('input').style.display = 'none';
+		e('output').style.display = 'block';
+
+
+
+	}
+
+	e( 'saveForm' ).onsubmit = function( event ) {
+		event.preventDefault();
+		var neueBenutzer = {};
+		neueBenutzer.vorname = e('vn').value;
+		neueBenutzer.nachname =  e('nn').value;
+		neueBenutzer.email =  e('email').value;
+		alleBenutzer.push( neueBenutzer );
+		console.log( alleBenutzer );
+	}
+}
+
+
+	</script>
+	<style>
+	* {
+		margin: 0px;
+		padding: 0px;
+	}
+html {
+	font-size:20px;
+}
+body {
+	background:#ccc;
+	padding:20px;
+
+}
+body, input, textarea, button, select {
+	font-family:Arial;
+}
+.page {
+	border:1px solid #000;
+	width:400px;
+	height:300px;
+  padding:20px;
+	background:#fff;
+	font-size:1.25em;
+}
+button {
+	font-size:1.25rem;
+}
+nav ul {
+	list-style:none;
+	margin:0;
+	padding:0;
+}
+nav li {
+	display:inline-block;
+	border:1px solid #000;
+	background:#666;
+	position:relative;
+	top:1px;
+}
+nav a {
+	text-decoration:none;
+	color:#000;
+	padding:10px 20px;
+	display:block;
+}
+nav li:hover {
+	background:#fff;
+	border-bottom-color:#fff;
+}
+
+nav li:checked{
+	background:#fff;
+	border-bottom-color:#fff;
+}
+
+
+	</style>
+</head>
+<body>
+<nav>
+	<ul>
+		<li><a href="#" data-page="home">Home</a></li><li><a href="#" data-page="input">Eingabe</a></li><li><a href="#" data-page="output">Ausgabe</a></li>
+	</ul>
+</nav>
+<section class="page" id="home">
+
+	<h1>Hello Userverwaltung!</h1>
+
+</section>
+<section class="page" id="input">
+
+	<form action="?" method="post" id="saveForm">
+		Vorname <input type="text" id="vn"><br>
+		Nachname <input type="text" id="nn"><br>
+		E-Mail-Adresse <input type="text" id="email"><br>
+		<button>Speichern</button>
+	</form>
+
+</section>
+<section class="page" id="output">
+	<h1>Ausgabe</h1>
+</section>
+
+
+</body>
+</html>

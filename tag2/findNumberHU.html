@@ -1,0 +1,170 @@
+<!doctype html>
+<html>
+<head>
+ <title>
+ </title>
+ <meta charset="utf-8">
+
+ <!-- ############# SCRIPT ################## -->
+ <script>
+ var geheim, round, logoutput='';
+
+
+ var rand = function(){
+   temp = Math.floor( (Math.random() * 10 / 9)*10  )*1
+ 	return temp;
+ }
+
+ var hideElement = function( idElement){
+ 	document.getElementById( idElement ).className = 'page';
+ }
+
+ var showElement = function( idElement){
+ 	document.getElementById( idElement ).className = 'page page-visible';
+ }
+
+ var changeElement = function( idElement, visible) {
+ 	if (visible) {
+ 		showElement( idElement);
+ 	} else {
+ 		hideElement( idElement );
+ 	}
+ }
+
+ var changeToStartGameScreen = function() {
+
+ 	document.getElementById( 'try-number' ).value = '';
+
+ 	changeElement( 'page-winn', false);
+ 	changeElement( 'page-play', true);
+ 	changeElement( 'page-log', false);
+  geheim = rand();
+  console.log(geheim);
+  round = 1;
+  console.log("round: " + round);
+  document.getElementById( 'result-element' ).innerHTML = geheim;
+  logoutput='';
+  document.getElementById( 'falsch-geraten' ).style.display = 'none';
+  document.getElementById( 'runde' ).innerHTML = round + '. Runde:';
+
+ }
+
+window.onload = function() {
+
+  changeToStartGameScreen();
+
+  document.getElementById('run-test').onclick = function( event ) {
+    event.preventDefault();
+
+    var probe = document.getElementById( 'try-number' ).value * 1;
+    console.log('round: ' + round);
+    console.log('probe: ' + probe);
+    if(probe == geheim){
+      //gratulieren im winn window, log lassen, letzte zeile gratulation
+       //document.getElementById( 'result-element' ).innerHTML = "spravne!";
+       changeElement( 'page-winn', true);
+       changeElement( 'page-play', false);
+       logoutput += (round + '. Runde: ' + probe + "<br>");
+      document.getElementById( 'log-lines' ).innerHTML = logoutput;
+
+    } else {
+
+      if (probe < geheim) {
+        document.getElementById( 'falsch-geraten' ).style.display = 'block';
+        document.getElementById( 'falsch-geraten' ).innerHTML='Deine Nummer ist kleiner! Probiere es noch einmal!';
+      } else if (true) {
+        document.getElementById( 'falsch-geraten' ).style.display = 'block';
+        document.getElementById( 'falsch-geraten' ).innerHTML='Deine Nummer ist größer! Probiere es noch einmal!';
+      }
+      changeElement( 'page-log', true);
+
+      document.getElementById( 'runde' ).innerHTML = round + '. Runde:';
+
+      console.log('round: ' + round);
+      logoutput += (round + '. Runde: ' + probe + "<br>");
+      document.getElementById( 'log-lines' ).innerHTML = logoutput;
+      round=round+1;
+      document.getElementById('try-number').focus();
+      document.getElementById('try-number').value= '';
+
+    } //else
+
+  } //onclick
+
+  document.getElementById('new-game').onclick = function( event ) {
+    event.preventDefault();
+    changeToStartGameScreen();
+  }
+
+} //window.onload
+
+ </script>
+
+<!-- ############# CSS STYLE ################## -->
+ <style>
+  h1,h2 {
+    text-align: center;
+    margin 0px , 50px;
+  }
+
+  #new-game {
+    text-align: center;
+    margin 0 , 50px;
+  }
+  body, button, input {font:20px Arial; }
+
+  section.page-visible { display:block; }
+  .page {
+    display:none;
+    width:598px;
+    height:398px;
+    border:1px solid #000;
+    margin:10px;
+		padding:1px; /* wegen collapsing margins! */
+	}
+
+  form {
+    padding:50px;
+    line-height:2;
+  }
+
+  button { cursor:pointer; }
+  #falsch-geraten {
+    display: none;
+    background:yellow;
+    color: red;
+  }
+
+  #result-element {
+    color: #848484;
+  }
+
+ </style>
+</head>
+<body>
+  <section id="page-play" class="page">
+    <h1>"Rate die Nummer" Spiel</h1>
+    </p>
+    <form action="?">
+      <p id=runde></p>
+      <p id="falsch-geraten">Leider falsch</p>
+  		 Rate die Nummer (0-10): <input type="number" id="try-number" min="0" max="10" autocomplete="off"><br>
+      <button id="run-test">Raten</button>
+      </form>
+      <p id=result-element></p>
+  </section>
+
+  <section id=page-winn class="page">
+    <h1>Gratulation, du hast die Zahl erfolgreich geraten!</h1>
+    <div id="new-game">
+      <button >Neues Spiel</button>
+    </div>
+  </section>
+
+  <section id=page-log class="page">
+    <h2>Deine Runden:</h2>
+    <p id="log-lines">test</p>
+  </section>
+
+</body>
+</html>
