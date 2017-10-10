@@ -8,16 +8,20 @@
 
 	var counter=0, i;
 
+
+
 	var removeClass= function(klasse){
-		var allObjects = document.getElementsByClassName('flipper');
+		//var allObjects = document.getElementsByClassName('flipper');
+		var allObjects = document.querySelectorAll('.flipper');
 		console.log(allObjects);
 
 		console.log('length:'+  allObjects.length);
 		for ( i = 0; i < allObjects.length; i++) {
+
 			allObjects[i].classList.remove(klasse);
 			console.log('removed:' + i);
-			//console.log('length:'+  max);
-		}
+			}//console.log('length:'+  max);
+
 	}
 
 	var verteilen = function (n)	{
@@ -39,17 +43,10 @@
 		zahlen.splice( zahlen.indexOf( value ), 1 );
 	}
 
-/*
-	var closeCards = function(){
-		var closeit=document.getElementsByClassName('flipped');
-		for (i = 0; i < closeit.length; i++) {
-			console.log('zum Schliessen: ' + closeit.length);
-		closeit[i].classList.remove('flipped');
-	  }
-		counter=0;//for
-	}*/
+
 
 	var zelleKlicken = function() {
+		var nrflp,nrdone;
 		console.log('wurde geklickt');
 		console.log(this.getAttribute('class'));
 		if (!this.classList.contains('flipped') && !this.classList.contains('done') ){
@@ -57,7 +54,18 @@
 			this.classList.add('flipped');
 
 			//falls 2 karten flipped, vergleichen
-			if(document.getElementsByClassName('flipped').length=2){
+			if(document.getElementsByClassName('flipped').length==2){
+				console.log("vergleichen");
+				var first = document.getElementsByClassName('flipped')[0].dataset.id;
+				var second = document.getElementsByClassName('flipped')[1].dataset.id;
+				if ( first == second ) {
+					document.getElementsByClassName('flipped')[0].classList.add('done');
+					document.getElementsByClassName('flipped')[1].classList.add('done');
+					//removeClass('flipped');
+					removeClass('flipped');
+				} else {
+					removeClass('flipped');
+				}
 
 				/*
 				if(document.getElementsByClassName('flipped')[0].value - document.getElementsByClassName('flipped')[0].value = 0) {
@@ -119,6 +127,7 @@
 		}
  	console.log(source);
 
+	
 		var fl; //i deleted
 
 		for ( i=0; i<20; i++ ) {
@@ -132,18 +141,7 @@
 			var temp2= fl.getAttribute('data-id');
 			console.log(temp2);
 
-			//console.log(fl.childNodes[0].innerHTML);
-			//fl.setAttribute("data-id", "pepa");
-			//console.log(fl.getAttribute["data-id"]);
-
-
-			//fl.childNodes[0].setAttribute('data-id', source[i][0]);
-			//console.log(fl.childNodes[0].getAttribute['data-id']);
-			//fl.childNodes[0].setAttribute('data-id', source[i][1]);
-			//console.log(fl.childNodes[0].getAttribute['data-id']);
-
 			fl.childNodes[1].innerHTML=source[i][0];
-			//fl.childNodes[0].onclick = zelleKlicken;
 			fl.onclick = zelleKlicken;
 			e( 'game' ).appendChild( fl );
 		}
