@@ -8,30 +8,38 @@
 
 	var counter=0, i;
 
+	var removeClass= function(klasse){
+		var allObjects = document.getElementsByClassName('flipper');
+		console.log(allObjects);
+
+		console.log('length:'+  allObjects.length);
+		for ( i = 0; i < allObjects.length; i++) {
+			allObjects[i].classList.remove(klasse);
+			console.log('removed:' + i);
+			//console.log('length:'+  max);
+		}
+	}
+
 	var verteilen = function (n)	{
 		var zufStart = [];
 		for (var i = 0; i < n; i++) {
 			for (var j = 0; j < array.length; j++) {
 				if (isNaN(zufStart[j])){
 					zufStart[j]=voc[j];
-				}
-			}
+				} //if
+			} //innen for
 
 			var temp=zufallsZahl(0,n);
 
-		}
-	}
+		}  //aussen for
+	} // function verteilen
 
-	var zufallsZahl = function( von, bis ) {
-		var number;
-		number = Math.floor( Math.random() * (bis-von+1) ) + von;
-		return number;
-	}
 
 	var deleteValueFromArray = function( value ) {
 		zahlen.splice( zahlen.indexOf( value ), 1 );
 	}
 
+/*
 	var closeCards = function(){
 		var closeit=document.getElementsByClassName('flipped');
 		for (i = 0; i < closeit.length; i++) {
@@ -39,21 +47,31 @@
 		closeit[i].classList.remove('flipped');
 	  }
 		counter=0;//for
-	}
+	}*/
 
 	var zelleKlicken = function() {
 		console.log('wurde geklickt');
+		this.classList.add('flipped');
+		var number=document.getElementsByClassName('flipped').length;
+		console.log('pocet otocenejch' + number);
 
-		if (counter<2){
+/*
+		if (counter>1){
+			//closeCards();
+			removeClass('flipped');
+		} else if (counter<2){
 			counter++;
-		} else if (counter>1){
-			closeCards();
 		}
+
 		console.log(counter);
-		this.classList.toggle("flipped");
+		this.classList.toggle("flipped");*/
 	}
 
 	window.onload = function() {
+		console.log('zaciname');
+
+		console.log('pocet otocenejch' + document.getElementsByClassName('flipped').length);
+
 		var voc = [
 				['dog','Hund'],
 				['cat','Katze'],
@@ -70,7 +88,7 @@
 		var source=[] ;
 
 //reformatieren voc
-		var i;
+		//var i;
 		for ( i=0;i<20;i=i+2){
 
 	  source[i]=new Array();
@@ -82,7 +100,7 @@
 
 		}
 
-		var fl,i;
+		var fl; //i deleted
 
 		for ( i=0; i<20; i++ ) {
 
@@ -104,7 +122,7 @@
 		#game .flipper { float:left;width:100px; height:100px; position:relative; margin:10px; }
 		#game .flipper div { transition:transform 1s; position:absolute; top:0; left:0; backface-visibility: hidden; width:100px; height:100px; border:1px solid #000; background:#fff; text-align:center; line-height:95px; }
 		#game::after { content:''; display:block; clear:left;  }
-		#game .flipper { perspective: 1000; }
+		#game .flipper { perspective: 1000px; }
 		#game div > div:nth-child(1) { transform: rotateY(180deg); }
 		#game div > div:nth-child(2) { transform: rotateY(0deg); background:#aaa; color:#fff;  }
 		#game div.flipped { }
