@@ -6,44 +6,25 @@
 	<script src="wifi.funktionen.js"></script>
 	<script>
 
-	var counter=0, i;
+	var  i;
 
+	var shuffle =function  (array) {
+	  var i = 0
+	    , j = 0
+	    , temp = [];
 
+	  for (i = array.length - 1; i > 0; i -= 1) {
+	    j = Math.floor(Math.random() * (i + 1))
 
-	var removeClass= function(klasse){
-		//var allObjects = document.getElementsByClassName('flipper');
-		var allObjects = document.querySelectorAll('.flipper');
-		console.log(allObjects);
-
-		console.log('length:'+  allObjects.length);
-		for ( i = 0; i < allObjects.length; i++) {
-
-			allObjects[i].classList.remove(klasse);
-			console.log('removed:' + i);
-			}//console.log('length:'+  max);
-
+			temp = array[i].slice();
+ 	    array[i] = array[j].slice();
+ 	    array[j] = temp.slice()
+	  }
 	}
-
-	var verteilen = function (n)	{
-		var zufStart = [];
-		for (var i = 0; i < n; i++) {
-			for (var j = 0; j < array.length; j++) {
-				if (isNaN(zufStart[j])){
-					zufStart[j]=voc[j];
-				} //if
-			} //innen for
-
-			var temp=zufallsZahl(0,n);
-
-		}  //aussen for
-	} // function verteilen
-
 
 	var deleteValueFromArray = function( value ) {
 		zahlen.splice( zahlen.indexOf( value ), 1 );
 	}
-
-
 
 	var zelleKlicken = function() {
 		var nrflp,nrdone;
@@ -54,49 +35,25 @@
 			this.classList.add('flipped');
 
 			//falls 2 karten flipped, vergleichen
-			if(document.getElementsByClassName('flipped').length==2){
+			if(document.querySelectorAll('.flipped:not(.done)').length==2){
 				console.log("vergleichen");
-				var first = document.getElementsByClassName('flipped')[0].dataset.id;
-				var second = document.getElementsByClassName('flipped')[1].dataset.id;
+				var first = document.querySelectorAll('.flipped:not(.done)')[0].dataset.id;
+				var second = document.querySelectorAll('.flipped:not(.done)')[1].dataset.id;
 				if ( first == second ) {
-					document.getElementsByClassName('flipped')[0].classList.add('done');
-					document.getElementsByClassName('flipped')[1].classList.add('done');
-					//removeClass('flipped');
-					removeClass('flipped');
+					document.querySelectorAll('.flipped:not(.done)')[0].classList.add('done');
+					document.querySelectorAll('.flipped:not(.done)')[0].classList.add('done');
 				} else {
-					removeClass('flipped');
-				}
-
-				/*
-				if(document.getElementsByClassName('flipped')[0].value - document.getElementsByClassName('flipped')[0].value = 0) {
-					document.getElementsByClassName('flipped')[0].classList.add('done');
-					document.getElementsByClassName('flipped')[1].classList.add('done');
-				} else {
-					removeClass('flipped');
-				}
-					*/
-			}
+					document.querySelectorAll('.flipped:not(.done)')[0].classList.remove('flipped');
+					document.querySelectorAll('.flipped:not(.done)')[0].classList.remove('flipped');
+				} //int if
+			} //ext if
 			var number=document.getElementsByClassName('flipped').length;
 			console.log('pocet otocenejch' + number);
 			console.log(this.getAttribute('class'));
-		}
-/*
-		if (counter>1){
-			//closeCards();
-			removeClass('flipped');
-		} else if (counter<2){
-			counter++;
-		}
-
-		console.log(counter);
-		this.classList.toggle("flipped");*/
-
-	}
+		} //first if
+	} //zelleKlicken function
 
 	window.onload = function() {
-		console.log('zaciname');
-
-		console.log('pocet otocenejch' + document.getElementsByClassName('flipped').length);
 
 		var voc = [
 				['dog','Hund'],
@@ -125,9 +82,9 @@
 	  source[i+1][1]=voc[i/2][1];
 
 		}
- 	console.log(source);
 
-	
+	shuffle(source);
+
 		var fl; //i deleted
 
 		for ( i=0; i<20; i++ ) {
@@ -166,7 +123,7 @@
 	<div id="game">
 
 		<!-- Inhalte dynamisch erzeugen
-		<div class="flipper" >
+		<div class="flipper flipped done"  >
 			<div>FRONT</div>
 			<div>BACK</div>-->
 	</div>
