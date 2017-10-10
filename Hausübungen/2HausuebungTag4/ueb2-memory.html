@@ -51,10 +51,27 @@
 
 	var zelleKlicken = function() {
 		console.log('wurde geklickt');
-		this.classList.add('flipped');
-		var number=document.getElementsByClassName('flipped').length;
-		console.log('pocet otocenejch' + number);
+		console.log(this.getAttribute('class'));
+		if (!this.classList.contains('flipped') && !this.classList.contains('done') ){
+			console.log('obsahuje flipped?'+ this.classList.contains('flipped'));
+			this.classList.add('flipped');
 
+			//falls 2 karten flipped, vergleichen
+			if(document.getElementsByClassName('flipped').length=2){
+
+				/*
+				if(document.getElementsByClassName('flipped')[0].value - document.getElementsByClassName('flipped')[0].value = 0) {
+					document.getElementsByClassName('flipped')[0].classList.add('done');
+					document.getElementsByClassName('flipped')[1].classList.add('done');
+				} else {
+					removeClass('flipped');
+				}
+					*/
+			}
+			var number=document.getElementsByClassName('flipped').length;
+			console.log('pocet otocenejch' + number);
+			console.log(this.getAttribute('class'));
+		}
 /*
 		if (counter>1){
 			//closeCards();
@@ -65,6 +82,7 @@
 
 		console.log(counter);
 		this.classList.toggle("flipped");*/
+
 	}
 
 	window.onload = function() {
@@ -99,6 +117,7 @@
 	  source[i+1][1]=voc[i/2][1];
 
 		}
+ 	console.log(source);
 
 		var fl; //i deleted
 
@@ -109,7 +128,21 @@
 			fl.appendChild(document.createElement( 'div' ));
 			fl.appendChild(document.createElement( 'div' ));
 			fl.childNodes[0].innerHTML=source[i][1];
-			fl.childNodes[1].innerHTML='back';
+			fl.setAttribute('data-id', source[i][0]);
+			var temp2= fl.getAttribute('data-id');
+			console.log(temp2);
+
+			//console.log(fl.childNodes[0].innerHTML);
+			//fl.setAttribute("data-id", "pepa");
+			//console.log(fl.getAttribute["data-id"]);
+
+
+			//fl.childNodes[0].setAttribute('data-id', source[i][0]);
+			//console.log(fl.childNodes[0].getAttribute['data-id']);
+			//fl.childNodes[0].setAttribute('data-id', source[i][1]);
+			//console.log(fl.childNodes[0].getAttribute['data-id']);
+
+			fl.childNodes[1].innerHTML=source[i][0];
 			//fl.childNodes[0].onclick = zelleKlicken;
 			fl.onclick = zelleKlicken;
 			e( 'game' ).appendChild( fl );
