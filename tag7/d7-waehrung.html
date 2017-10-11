@@ -18,9 +18,14 @@
 
 			var xml =$.parseXML ( data);
 			$('Cube > Cube > Cube', xml).each(function(){
+
 				console.log( $(this).attr('currency'));
 			});
 			console.log($('Cube > Cube', xml).find( "[currency='USD']" ).attr('rate') );
+			var i;
+			for (i in $('Cube > Cube', xml) ) {
+				console.log(i.find( "[currency='USD']" ).attr('rate') );
+			} //for
 
 		}
 	});
