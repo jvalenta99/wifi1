@@ -22,9 +22,10 @@
 	  }
 	}
 
-	var deleteValueFromArray = function( value ) {
-		zahlen.splice( zahlen.indexOf( value ), 1 );
+	var resetGame = function(){
+		reload();
 	}
+
 
 	var zelleKlicken = function() {
 		var nrflp,nrdone;
@@ -51,6 +52,9 @@
 			console.log('pocet otocenejch' + number);
 			console.log(this.getAttribute('class'));
 		} //first if
+		console.log('rest: '+ document.querySelectorAll('.flipper:not(.done)').length);
+
+
 	} //zelleKlicken function
 
 	window.onload = function() {
