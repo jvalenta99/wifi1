@@ -8,6 +8,42 @@
 ;(function() {
 	"use strict";
 
+
+	var getNumber = function( idElement ) {
+			var value;
+			value = $('#eingabe').val();
+			value = value.replace( ',', '.' ) * 1;
+			return value;
+	}
+
+	var printNumber = function( number ) {
+  	number = Math.round( number * 100 ) / 100;
+  	number = number + ''; // number to String, number.toString()
+  	number = number.replace( '.', ',' );
+  	return number;
+  }
+
+	var updateCalculation = function() {
+
+		var kurs=$('#currency').val()*1;
+		console.log('kurs: ' + kurs);
+		console.log('changed currency');
+		console.log(getNumber());
+
+		$('strong').html(kurs*getNumber());
+
+	}
+
+	$( document ).on( 'change', '#currency', function(event) {
+		event.preventDefault();
+		updateCalculation();
+	});
+
+	$( document ).on( 'keyup', '#eingabe', function() {
+
+		updateCalculation();
+	});
+
 	$.ajax({
 		//url:'https://www.ecb.europa.eu/stats/eurofxref/eurofxref-daily.xml',
 		url:'http://wifi.1av.at/507/ecb.php',
@@ -18,15 +54,15 @@
 
 			var xml =$.parseXML ( data);
 			$('Cube > Cube > Cube', xml).each(function(){
-
+				var i, output=[];
 				console.log( $(this).attr('currency'));
 			});
 			console.log($('Cube > Cube', xml).find( "[currency='USD']" ).attr('rate') );
-			var i;
+/*
 			for (i in $('Cube > Cube', xml) ) {
 				console.log(i.find( "[currency='USD']" ).attr('rate') );
 			} //for
-
+*/
 		}
 	});
  }());
@@ -39,9 +75,9 @@
 <input type="text" id="eingabe">
 <select id="currency">
 	<option>bitte wählen...</option>
-	<option value="1,17">USD</option>
+	<option value="1.17">USD</option>
 	<option value="27.8">CZK</option>
 </select>
-<strong id="ergebnis"></strong>
+<strong id="ergebnis">kk</strong>
 </body>
 </html>
