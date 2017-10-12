@@ -4,6 +4,7 @@
 	<title></title>
 	<meta charset="utf-8">
 	<script src="jquery-3.2.1.min.js"></script>
+	<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
 	<script>
 ;(function() {
 	"use strict";
@@ -84,14 +85,39 @@ $("#mySelect").append('<option value='+ratevar +'>My option</option>');
 	</script>
 	<style>
 	html { font-size:2em; }
+
+	body { font:20px Arial; line-height:1.2; }
+	nav ul { list-style:none; padding:0px; background:#ccc; }
+	nav li { display:inline-block; position:relative; }
+	nav a { display:block; text-decoration:none; padding:5px 15px;
+		font-weight:bold; color:#000; }
+	nav li:hover > a { background:#000; color:#fff;  }
+	nav ul ul { display:none; position:absolute;
+		top:calc(1.2em + 10px);
+		 left:0; background:#999; }
+	nav ul ul li { display:block; }
 	</style>
 </head>
 <body>
 <input type="text" id="eingabe">
+<nav>
+	<ul>
+			<li><a href="#">Produkte</a>
+			<ul>
+				<li><a href="#">T-Shirts</a></li>
+				<li><a href="#">Flip Flops</a></li>
+				<li><a href="#">Spritzpistolen</a></li>
+				<li><a href="#">Luftmatratzen</a></li>
+			</ul>
+		</li>
+
+	</ul>
+</nav>
+
 <select id="currency">
 	<option>bitte wählen...</option>
-	<!--<option value="1.17">USD</option>
-	<option value="27.8">CZK</option> -->
+	<option value="1.17">USD</option>
+	<option value="27.8">CZK</option>
 </select>
 <strong id="ergebnis">kk</strong>
 </body>

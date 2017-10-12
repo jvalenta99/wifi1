@@ -1,0 +1,81 @@
+<!doctype html>
+<html>
+<head>
+	<title></title>
+	<meta charset="utf-8">
+	<script src="jquery-3.2.1.min.js"></script>
+	<script>
+;(function() {
+		"use strict";
+	//"use strict";
+
+	var orte = {};
+
+	$.ajax({
+		url:'http://wifi.1av.at/507/getplz.php',
+		method: 'GET',
+		data:{xml:true},
+		success:function(data){
+			//data = $.parseXML( data);
+			console.log( data);
+			$('datensatz', data ).each(function(){
+				var plz= $(this).find('element:nth-child(5)').html();
+				//console.log("plz: " + plz);
+				var ort= $(this).find('element:nth-child(2)').html();
+				//console.log("ort: " + ort);
+				if(typeof orte[ plz ] != 'object') {
+					orte[plz]= [];
+				}
+
+				orte[plz].push(ort)
+			}) //end of each
+		}});
+
+
+	var getNumber = function( idElement ) {
+			var value;
+			value = $('#eingabe').val();
+			value = value.replace( ',', '.' ) * 1;
+			return value;
+	}
+
+	var zeigeorte = function(){
+
+
+				console.log(orte);
+				console.log(orte);
+				//console.log( 'nr von orten: ' + orte[$('#eingabe').val()].length);
+
+				//if(typeof orte[ plz ] != 'object') {
+				if (typeof  orte[$('#eingabe').val()] != 'object') {
+					console.log("es gibt kein ort");
+				}
+
+
+
+	} //zeigeorte
+
+
+
+	$( document ).on( 'keyup', '#eingabe', function(event) {
+		event.preventDefault();
+		console.log('lenge' + $('#eingabe').val().length);
+
+		if($('#eingabe').val().length == 4) {
+			zeigeorte();
+		}
+	});
+
+
+
+}());
+	</script>
+	<style>
+
+	</style>
+</head>
+<body>
+	<input type="text" id="eingabe" maxlength="4">
+
+</body>
+</html>
