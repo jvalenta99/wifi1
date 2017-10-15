@@ -8,35 +8,42 @@
 	<script>
 $( document ).ready( function() {
 
-	//$( 'p:last-child' ).red().html('Test');
-	//$( 'p' ).colorize({g:255,b:255});
-//	$( 'p:last-child' ).colorize();
 	$( '.news' ).formatnews();
 	console.log("html script läuft!");
 });
 	</script>
 	<style>
-	.news {
+	.newsticker {
 		color: red;
+		background-color: yellow;
+		//background-color: yellow;
+		//display: inline-block;
 	 	position: relative;
 		white-space: nowrap;
   	overflow: hidden;
+
 		animation-name: laufe;
 		animation-duration: 5s;
-		animation-iteration-count: 3;
+		animation-iteration-count: infinite;
 		animation-timing-function: linear
 		}
 
 	@keyframes laufe {
 		from {transform: translateX(100%);}
-		to{transform: translateX(-100%);}
+		to{transform: translateX(-300%);}
 
 	}
 
+	span {
+		color:green;
+		background-color: red;
+		display:inline-block;
+	}
 	</style>
 </head>
 <body>
-<div class="news">News1. blablabla blablabla blablabla</div>
+
+<div class="news">News1. blablabla blablabla blablabla blablablablablabla blablablablablabla  blablabla blablabla blablabla blablablablablabla blablablablablabla blablabla blablabla blablabla blablablablablabla blablablablablabla blablabla blablabla blablabla blablablablablabla blablablablablabla blablabla blablabla blablabla blablablablablabla blablablablablabla</div>
 <p class="news2">Absatz 2: Hier kommt ein <b>Tag</b> mit einem Attribute,
 	Achtung:<span style="width:100px; display:block;">Das ist 1 DIV mit einer Breite von 100px</span></p>
 <p class="news">Absatz 3</p>
