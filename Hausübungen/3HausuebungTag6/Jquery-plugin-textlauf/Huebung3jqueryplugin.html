@@ -4,7 +4,6 @@
 	<title></title>
 	<meta charset="utf-8">
 	<script src="jquery-3.2.1.min.js"></script>
-	<script src="jquery-meinplugin.js"></script>
 	<script src="jquery-formatnewslauf.js"></script>
 	<script>
 $( document ).ready( function() {
@@ -12,8 +11,8 @@ $( document ).ready( function() {
 	//$( 'p:last-child' ).red().html('Test');
 	//$( 'p' ).colorize({g:255,b:255});
 //	$( 'p:last-child' ).colorize();
-	$( 'news2' ).formatNumbers();
-
+	$( '.news' ).formatnews();
+	console.log("html script läuft!");
 });
 	</script>
 	<style>
@@ -38,8 +37,8 @@ $( document ).ready( function() {
 </head>
 <body>
 <div class="news">News1. blablabla blablabla blablabla</div>
-<p class="news">Absatz 2: Hier kommt ein <b>Tag</b> mit einem Attribute,
+<p class="news2">Absatz 2: Hier kommt ein <b>Tag</b> mit einem Attribute,
 	Achtung:<span style="width:100px; display:block;">Das ist 1 DIV mit einer Breite von 100px</span></p>
-<p class="news>Absatz 3</p>
+<p class="news">Absatz 3</p>
 </body>
 </html>
