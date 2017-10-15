@@ -12,17 +12,34 @@ $( document ).ready( function() {
 	//$( 'p:last-child' ).red().html('Test');
 	//$( 'p' ).colorize({g:255,b:255});
 //	$( 'p:last-child' ).colorize();
-	$( 'p' ).formatNumbers();
+	$( 'news2' ).formatNumbers();
 
 });
 	</script>
 	<style>
+	.news {
+		color: red;
+	 	position: relative;
+		white-space: nowrap;
+  	overflow: hidden;
+		animation-name: laufe;
+		animation-duration: 5s;
+		animation-iteration-count: 3;
+		animation-timing-function: linear
+		}
+
+	@keyframes laufe {
+		from {transform: translateX(100%);}
+		to{transform: translateX(-100%);}
+
+	}
+
 	</style>
 </head>
 <body>
-<p>Absatz 1: Das ist Text. Manchmal kommen Zahlen wie 12345 vor.</p>
-<p>Absatz 2: Hier kommt ein <b>Tag</b> mit einem Attribute,
+<div class="news">News1. blablabla blablabla blablabla</div>
+<p class="news">Absatz 2: Hier kommt ein <b>Tag</b> mit einem Attribute,
 	Achtung:<span style="width:100px; display:block;">Das ist 1 DIV mit einer Breite von 100px</span></p>
-<p>Absatz 3</p>
+<p class="news>Absatz 3</p>
 </body>
 </html>
