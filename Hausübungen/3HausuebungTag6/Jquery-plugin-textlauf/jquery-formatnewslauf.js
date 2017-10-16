@@ -4,51 +4,56 @@
     var settings = $.extend({
     //  <<<SETTINGNAME>>>:<<<STANDARDVALUE>>>
     },options);
-    $('<p>')
-      .html(textnews)
+    $('<div>')
       .addClass( 'newsticker')
+      .css({
+        'white-space':'no-wrap',
+      	overflow:'hidden',
+      	'text-indent': '0px'
+      })
       .prependTo( 'body' );
-      /*
-      $('<span>')
-        .prependTo('.newsticker');*/
-/*
-      {
-        color: 'red';
-        position: 'relative';
-        white-space: 'nowrap';
-        overflow: 'hidden';
-        animation-name: 'laufe';
-        animation-duration: '5s';
-        animation-iteration-count: 'infinite';
-        animation-timing-function: 'linear'
-        }
-*/
-      $('<p>')
-        .html("breite in px: " + breite)
-        .addClass( 'elementbreite')
-        .appendTo( 'body' );
-    console.log("plugin before return");
-    return this.each( function() {
+
+    $('<div>')
+      .html(textnews)
+      .css({
+        'white-space':'nowrap',
+        display:'inline',
+        color: 'red',
+        width:'auto'
+      })
+      .prependTo('.newsticker');
+
+      console.log("plugin before return");
+    //return
+
+    this.each( function() {
 
       console.log("plugin ausgeführt in der schleife!");
-      console.log('window width: '+ $(window).width());
 
-      //  $(this).hide();
+      $(this).hide();
       textnews +=$(this).html();
       textnews +='&nbsp;&nbsp;&nbsp;&nbsp;';
-      $('.newsticker').html(textnews);
-        console.log('newsticker-länge: ' + breite);
-      breite = Math.round( $( '.newsticker' )[0].getBoundingClientRect().width );
-      $('.elementbreite').html(breite);
+      $('.newsticker>div').html(textnews);
 
-      duration = Math.round ( breite / speed );
-      //$('.newsticker').css({"'animation-duration': '" + duration + "s'"});
-      $('.newsticker').css({'animation-duration': '7s'});
-
-
-
-      console.log(duration);
     }); //each schleife
+    var position=1000;
 
+
+    var move =function  (){
+      console.log("ahoj"+position);
+      $('div.newsticker').css({'text-indent': +position+'px'});
+      position--;
+    }
+
+    while (position>200){
+
+      setInterval( move(), 1000 );
+
+      //if(position<0) position=100;
+    }
+
+  console.log("ahoj"+position);
+    $('div.newsticker').css({'text-indent': +position+'px'});
+    return this;
   };
 }(jQuery));

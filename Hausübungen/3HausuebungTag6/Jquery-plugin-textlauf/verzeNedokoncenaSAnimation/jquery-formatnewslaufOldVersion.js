@@ -28,7 +28,8 @@
         .addClass( 'elementbreite')
         .appendTo( 'body' );
     console.log("plugin before return");
-    return this.each( function() {
+    //return
+    $(this).each( function() {
 
       console.log("plugin ausgeführt in der schleife!");
       console.log('window width: '+ $(window).width());
