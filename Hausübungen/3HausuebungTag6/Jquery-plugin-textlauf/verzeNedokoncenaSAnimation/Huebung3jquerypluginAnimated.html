@@ -1,0 +1,51 @@
+<!doctype html>
+<html>
+<head>
+	<title></title>
+	<meta charset="utf-8">
+	<script src="jquery-3.2.1.min.js"></script>
+	<script src="jquery-formatnewslauf.js"></script>
+	<script>
+$( document ).ready( function() {
+
+	$( '.news' ).formatnews();
+	console.log("html script läuft!");
+});
+	</script>
+	<style>
+	.newsticker {
+		color: red;
+		background-color: yellow;
+		//background-color: yellow;
+		//display: inline-block;
+	 	position: relative;
+		white-space: nowrap;
+  	overflow: hidden;
+
+		animation-name: laufe;
+		animation-duration: 5s;
+		animation-iteration-count: infinite;
+		animation-timing-function: linear
+		}
+
+	@keyframes laufe {
+		from {transform: translateX(100%);}
+		to{transform: translateX(-300%);}
+
+	}
+
+	span {
+		color:green;
+		background-color: red;
+		display:inline-block;
+	}
+	</style>
+</head>
+<body>
+
+<div class="news">News1. blablabla blablabla blablabla blablablablablabla blablablablablabla  blablabla blablabla blablabla blablablablablabla blablablablablabla blablabla blablabla blablabla blablablablablabla blablablablablabla blablabla blablabla blablabla blablablablablabla blablablablablabla blablabla blablabla blablabla blablablablablabla blablablablablabla</div>
+<p class="news2">Absatz 2: Hier kommt ein <b>Tag</b> mit einem Attribute,
+	Achtung:<span style="width:100px; display:block;">Das ist 1 DIV mit einer Breite von 100px</span></p>
+<p class="news">Absatz 3</p>
+</body>
+</html>
