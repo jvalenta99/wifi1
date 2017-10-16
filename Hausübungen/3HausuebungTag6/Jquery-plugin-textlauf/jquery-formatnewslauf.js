@@ -3,7 +3,9 @@
   $.fn.formatnews = function( options ) {
     var textnews = '', breite=50, speed=100, duration;
     var settings = $.extend({
-    //  <<<SETTINGNAME>>>:<<<STANDARDVALUE>>>
+      speed:'10',
+      width: 'auto',
+      runcounter: 'endless'
     },options);
     $('<div>')
       .addClass( 'newsticker')
@@ -14,7 +16,9 @@
         padding: '10px',
         'border-radius':'10px',
         'box-shadow': '2px 2px 10px grey',
-        'text-shadow': '2px 2px 4px #000000'
+        'text-shadow': '2px 2px 4px #000000',
+        'margin':'auto',
+        'width':settings.width
       })
       .prependTo( 'body' );
 
@@ -55,7 +59,10 @@
 
     }); //each schleife
 
-    position=$(window).width();
+    position=$(window).width()/2+$('div.newsticker').width/2;
+    console.log('window width: '+$(window).width());
+    console.log('sticker width in px: ' + $('div.newsticker').width());
+
     var move =function  (){
       $('div.newsticker').css({'text-indent': +position+'px'});
       position--;
@@ -63,7 +70,7 @@
         position=$(window).width();
       }
       if(stop==1){position++;}
-      setTimeout( move,10);
+      setTimeout( move,settings.speed);
     } //move function
     move();
     $('div.newsticker').css({'text-indent': +position+'px'});

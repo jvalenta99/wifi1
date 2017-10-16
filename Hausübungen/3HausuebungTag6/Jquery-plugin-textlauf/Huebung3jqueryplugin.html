@@ -9,7 +9,15 @@
 		;(function() {
 			"use strict";
 			$( document ).ready( function() {
-				$( '.news' ).formatnews().addClass('gruen');
+				//$( '.news' ).formatnews();#
+				//speed (1..schnell, 30 sehr langsam)
+				//width in px
+				//runcounter: Anzahl oder endless
+				$( '.news' ).formatnews({
+					'speed':'2',
+					'width':'400',
+					'runcounter':'3'
+				}).addClass('gruen'); //=>transparent
 			}) //document ready
 		}());
 	</script>
