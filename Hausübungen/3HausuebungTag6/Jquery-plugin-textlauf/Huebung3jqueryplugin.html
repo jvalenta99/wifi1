@@ -9,40 +9,28 @@
 		;(function() {
 			"use strict";
 			$( document ).ready( function() {
-				$( '.news' ).formatnews();
-				console.log("html script läuft!");
-
+				$( '.news' ).formatnews().addClass('gruen');
 			}) //document ready
 		}());
 	</script>
 <style>
-/*
-div.newsticker {
-	white-space:no-wrap;
-	overflow:hidden;
-	text-indent: -46px;
-}
-div.newsticker > div.inhaltnews {
-	white-space:nowrap;
-	display:inline;
-	color: red;
-	width:auto;
-*/
-}
 </style>
 </head>
 <body>
 <!--
 	<div class='newsticker'>
-	    <div class='inhaltnews'>
+	    <div>
 	        Testing this marquee function
 	    </div>
 	</div>
 -->
-<div class="news">News1. blablablabla blablablablablabla</div>
-<p class="news2">Absatz 2: Hier kommt ein <b>Tag</b> mit einem Attribute,
-	Achtung:<span style="width:100px; display:block;">Das ist 1 DIV mit einer Breite von 100px</span></p>
-<p class="news">Absatz 3</p>
-<p class="news">Absatz 	4</p>
+<div class="news">Die meisten Vegetarier bestehen aus Fleisch</div>
+<p class="newsnichtzeigen">Das ist keine Nachricht, da andere Klasse verknüpft</span></p>
+<p class="news">160 Häftlinge warten auf den Tag der offenen Tür.</p>
+<p class="news">Autofahrer, die einen Unfall verursachen, haben meist selbst schuld.</p>
+<p class="news">Scheintote weinte in der Leichenhalle - Ich bin nicht tot, ich friere so</p>
+<p class="news">Auch Lothar Matthäus wünscht sich ein Baby. Aber er will sich nicht helfen lassen.</p>
+<p class="news"Kindergarten wächst: Sieben neue Parkplätze vor der Tür </p>
+<p class="news"></p>
 </body>
 </html>

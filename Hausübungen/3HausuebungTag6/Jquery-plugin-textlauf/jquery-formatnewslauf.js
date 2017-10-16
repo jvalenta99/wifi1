@@ -1,4 +1,5 @@
 ;(function($) {
+  var stop=0;
   $.fn.formatnews = function( options ) {
     var textnews = '', breite=50, speed=100, duration;
     var settings = $.extend({
@@ -7,9 +8,13 @@
     $('<div>')
       .addClass( 'newsticker')
       .css({
+        'background-color':'#86592d',
         'white-space':'no-wrap',
       	overflow:'hidden',
-      	'text-indent': '0px'
+        padding: '10px',
+        'border-radius':'10px',
+        'box-shadow': '2px 2px 10px grey',
+        'text-shadow': '2px 2px 4px #000000'
       })
       .prependTo( 'body' );
 
@@ -17,17 +22,30 @@
       .html(textnews)
       .css({
         'white-space':'nowrap',
+        'font-family':'Arial,Helvetica,sans-serif',
         display:'inline',
-        color: 'red',
-        width:'auto'
+        color: 'white',
+        width:'auto',
+        'font-weight': 'bold'
       })
       .prependTo('.newsticker');
 
+      $( document ).on( 'mouseover', '.newsticker', function() {
+        //stop=1;
+        console.log('mouseover');
+        stop=1;
+      })
+
+      $( document ).on( 'mouseleave', '.newsticker', function() {
+        //stop=1;
+        console.log('mouseleave');
+        stop=0;
+      })
+
       console.log("plugin before return");
-    //return
 
-    this.each( function() {
-
+   this.each( function() {
+      var position;
       console.log("plugin ausgeführt in der schleife!");
 
       $(this).hide();
@@ -36,24 +54,18 @@
       $('.newsticker>div').html(textnews);
 
     }); //each schleife
-    var position=$(window).width();
-    console.log('width div s textem: '+$('div.newsticker>div').width())
-    console.log('width newsticker: '+$('div.newsticker').width());
-    console.log('window width : '+$(window).width());
 
+    position=$(window).width();
     var move =function  (){
       $('div.newsticker').css({'text-indent': +position+'px'});
       position--;
       if(position<-1*$('div.newsticker>div').width()) {
         position=$(window).width();
-
       }
+      if(stop==1){position++;}
       setTimeout( move,10);
-
     } //move function
     move();
-
-    console.log("ahoj"+position);
     $('div.newsticker').css({'text-indent': +position+'px'});
     return this;
   };
