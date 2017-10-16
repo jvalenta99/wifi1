@@ -36,23 +36,24 @@
       $('.newsticker>div').html(textnews);
 
     }); //each schleife
-    var position=1000;
-
+    var position=$(window).width();
+    console.log('width div s textem: '+$('div.newsticker>div').width())
+    console.log('width newsticker: '+$('div.newsticker').width());
+    console.log('window width : '+$(window).width());
 
     var move =function  (){
-      console.log("ahoj"+position);
       $('div.newsticker').css({'text-indent': +position+'px'});
       position--;
-    }
+      if(position<-1*$('div.newsticker>div').width()) {
+        position=$(window).width();
 
-    while (position>200){
+      }
+      setTimeout( move,10);
 
-      setInterval( move(), 1000 );
+    } //move function
+    move();
 
-      //if(position<0) position=100;
-    }
-
-  console.log("ahoj"+position);
+    console.log("ahoj"+position);
     $('div.newsticker').css({'text-indent': +position+'px'});
     return this;
   };
