@@ -83,7 +83,8 @@
       }
       if(stop==1){position++;}
       console.log('importierte counter:'+ settings.runcounter);
-      if (counter<settings.runcounter*1){
+      
+      if (counter<settings.runcounter*1||settings.runcounter=='endless'){
         setTimeout( move,settings.speed);
         console.log('runs: '+ counter);
       }
