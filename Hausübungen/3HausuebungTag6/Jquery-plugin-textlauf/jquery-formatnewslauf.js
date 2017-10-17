@@ -13,7 +13,7 @@
         'background-color':'#86592d',
         'white-space':'no-wrap',
       	overflow:'hidden',
-        padding: '10px',
+        padding: '10px 0px',
         'border-radius':'10px',
         'box-shadow': '2px 2px 10px grey',
         'text-shadow': '2px 2px 4px #000000',
@@ -45,7 +45,6 @@
         console.log('mouseleave');
         stop=0;
       })
-
       console.log("plugin before return");
 
    this.each( function() {
@@ -58,21 +57,40 @@
       $('.newsticker>div').html(textnews);
 
     }); //each schleife
+    var windowwidth=$(window).innerWidth()*1;
+    console.log('window width: ' + windowwidth);
 
-    position=$(window).width()/2+$('div.newsticker').width/2;
-    console.log('window width: '+$(window).width());
-    console.log('sticker width in px: ' + $('div.newsticker').width());
+    var stickerwidth=$('div.newsticker').width()*1;
+    console.log('stickerwidth: ' + stickerwidth);
 
+    var textlength=$('div.newsticker>div').outerWidth()*1;
+    console.log('textlength: ' + textlength);
+
+    position=windowwidth/2+stickerwidth/2;
+    console.log('position: ' + position);
+
+    console.log('sticker width in px: ' + $('div.newsticker')[0].clientWidth);
+    var counter=0;
     var move =function  (){
       $('div.newsticker').css({'text-indent': +position+'px'});
+      //console.log('position in der schleife: '+ position);
       position--;
-      if(position<-1*$('div.newsticker>div').width()) {
-        position=$(window).width();
+      if(position<windowwidth/2-stickerwidth/2-textlength) {
+        console.log(position);
+        position=windowwidth/2+stickerwidth/2;
+        console.log(position);
+        counter++;
       }
       if(stop==1){position++;}
-      setTimeout( move,settings.speed);
+      console.log('importierte counter:'+ settings.runcounter);
+      if (counter<settings.runcounter*1){
+        setTimeout( move,settings.speed);
+        console.log('runs: '+ counter);
+      }
+
     } //move function
     move();
+    console.log('fertig: '+ counter);
     $('div.newsticker').css({'text-indent': +position+'px'});
     return this;
   };
