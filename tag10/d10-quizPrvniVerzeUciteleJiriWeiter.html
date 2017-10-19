@@ -1,0 +1,76 @@
+<!doctype html>
+<html>
+<head>
+	<title>Quiz Duellierung</title>
+	<meta charset="utf-8">
+	<script src="jquery-3.2.1.min.js"></script>
+	<script>
+;(function($){
+	"use strict";
+	// http://orf.at/static/images/site/news/20150939/millionenshow_15_jahre_body_assinger_a.4644228.jpg
+
+	//var anfragen = function() {
+
+	var frage1 = function() {
+	$.ajax({
+		url:'http://wifi.1av.at/507/q.php',
+		method:'POST',
+		data:{'anfrageart':'neuefrage', 'level':1},
+		dataType:'json', // Angabe nicht notwendig!
+		success:function( responsedata ) {
+			/*var response;
+			response = JSON.parse( responsedata );*/
+			console.log( 'POST>JSON', responsedata );
+		},
+		error:function(){
+
+		},
+		complete:function() {
+
+		}
+	});
+
+} //frage 1
+
+frage1();
+
+	var quiz = {
+		level:0,
+		punkte:0,
+		name:"",
+		fragen:function(){
+
+			//ajax call
+
+		}
+	}
+
+	$( document ).on( 'click', '#start', function( event ) {
+		event.preventDefault();
+
+	});
+ //console.log(new quiz());
+}(jQuery)); //function aussen
+	</script>
+	<style>
+
+	html, body { height:100%; padding:0; margin:0; }
+	#bg { filter: blur(0px); transform:scale(1); transition:transform 30s, filter 5s; position:absolute; z-index:-1; top:0; left:0; right:0; bottom:0; background:url(http://orf.at/static/images/site/news/20150939/millionenshow_15_jahre_body_assinger_a.4644228.jpg); background-size:cover; }
+	#bg.zoomHim { transform:scale(2);  filter: blur(10px); }
+	#wrapper {  display:flex; justify-content: center; align-items:center;
+		height:100%;}
+	form { text-align:center; }
+	#deinname { display:block; margin:0 auto; }
+	</style>
+</head>
+<body>
+<div id="bg"></div>
+<div id="wrapper">
+	<form method="post" action="?">
+		<label>Dein Name</label>
+		<input type="text" id="deinname">
+		<button id="start">Los geht's</button>
+	</form>
+</div>
+</body>
+</html>
