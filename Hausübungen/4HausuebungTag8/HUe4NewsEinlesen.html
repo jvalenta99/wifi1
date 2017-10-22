@@ -10,6 +10,22 @@
 		"use strict";
 		$( document ).ready( function() {
 
+		var newsarr = [];
+    $.ajax({
+  		url:'http://wifi.1av.at/507/news.php',
+  		method:'GET',
+  		success:function(data) {
+  			 //console.log(data);
+					$('a>h1',data).each(function(){
+						console.log("Nachricht: "+ $(this).html() );
+						newsarr.push($(this).html());
+						console.log(newsarr);
+					});
+
+  		}
+
+  	})
+
 
 
 		}) //document ready
@@ -20,7 +36,7 @@
 	</style>
 </head>
 <body>
-
+	servus
 
 </body>
 </html>
