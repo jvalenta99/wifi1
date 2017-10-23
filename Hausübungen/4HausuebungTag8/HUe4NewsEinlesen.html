@@ -16,27 +16,48 @@
   		method:'GET',
   		success:function(data) {
   			 //console.log(data);
-					$('a>h1',data).each(function(){
-						console.log("Nachricht: "+ $(this).html() );
+					$('a>h1, h2',data).each(function(){
+						//console.log("Nachricht: "+ $(this).html() );
 						newsarr.push($(this).html());
-						console.log(newsarr);
+						//console.log(newsarr);
 					});
-
+					//timer zeige news
+					zeigenews();
+					setInterval(zeigenews,60000);
   		}
 
   	})
 
-
+		var zeigenews = function(){
+			for (var i = 0; i < newsarr.length; i++) {
+				console.log("n:" + newsarr[i]);
+				$('<p>').css({display:'inline'}).html(newsarr[i]+"<br>").appendTo('.wrapper');
+			}
+			newsarr=[];
+			console.log(Date());
+			$('.newsticker').remove();
+			$('.wrapper p').formatnews();
+		}
 
 		}) //document ready
 	}());
 	</script>
 	<style>
+	html, body {margin: 0; padding: 0; height: 100%; font-size: 1.25rem}
+
+	h1 {font-weight: bold;}
+
+	.wrapper {text-align: center; border-radius: 1rem; position: relative; margin: 3rem; background-color: #cc9966; min-height: 100%; padding: 2rem; box-shadow: 10px 10px 41px 5px rgba(0,0,0,0.18); font-family: Arial, Helvetica, sans-serif }
 
 	</style>
 </head>
 <body>
-	servus
+
+	<div class="wrapper">
+		<h1>ORF News</h1>
+
+
+	</div>
 
 </body>
 </html>
