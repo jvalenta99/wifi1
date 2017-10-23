@@ -4,60 +4,63 @@
 	<title></title>
 	<meta charset="utf-8">
 	<script src="jquery-3.2.1.min.js"></script>
-	<script src="jquery-formatnewslauf.js"></script>
+	<script src="jquery-formatnewslaufVer2.js"></script>
 	<script>
 	;(function() {
 		"use strict";
 		$( document ).ready( function() {
-
-		var newsarr = [];
-    $.ajax({
-  		url:'http://wifi.1av.at/507/news.php',
-  		method:'GET',
-  		success:function(data) {
-  			 //console.log(data);
-					$('a>h1, h2',data).each(function(){
-						//console.log("Nachricht: "+ $(this).html() );
-						newsarr.push($(this).html());
-						//console.log(newsarr);
-					});
-					//timer zeige news
-					zeigenews();
-					setInterval(zeigenews,60000);
-  		}
-
-  	})
-
+		var newsarr = [], oldnews=[];
 		var zeigenews = function(){
-			for (var i = 0; i < newsarr.length; i++) {
-				console.log("n:" + newsarr[i]);
-				$('<p>').css({display:'inline'}).html(newsarr[i]+"<br>").appendTo('.wrapper');
-			}
-			newsarr=[];
-			console.log(Date());
-			$('.newsticker').remove();
-			$('.wrapper p').formatnews();
-		}
-
+			$.ajax({
+	  		url:'http://wifi.1av.at/507/news.php',
+	  		method:'GET',
+	  		success:function(data) {
+	  			 //console.log(data);
+					  $('.wrapper p').remove();
+						$('a>h1, h2',data).each(function(){
+							//console.log("Nachricht: "+ $(this).html() );
+							newsarr.push($(this).text());
+							//console.log(newsarr);
+						});
+						//timer zeige news
+						for (var i = 0; i < newsarr.length; i++) {
+							console.log("n:" + newsarr[i]);
+							if($.inArray(newsarr[i],oldnews)>=0) {
+								$('<p>').css({display:'inline'}).html(newsarr[i]+"<br>").appendTo('.wrapper');
+								console.log('nachricht ist nicht neu');
+							} else {
+								$('<p>').
+								css({display:'inline'}).
+								addClass( 'neugekommen' ).
+								html(newsarr[i]+"<br>").
+								appendTo('.wrapper');
+								console.log('nachricht ist neu');
+							}
+						}
+						oldnews=newsarr.slice();
+						console.log(oldnews);
+						newsarr=[];
+						console.log(Date());
+						$('.newsticker').remove();
+						$('.wrapper p').formatnews();
+	  		}
+	  	}) //ajax
+		} //zeigenews function
+		zeigenews();
+		setInterval(zeigenews,60000);
 		}) //document ready
 	}());
 	</script>
 	<style>
 	html, body {margin: 0; padding: 0; height: 100%; font-size: 1.25rem}
-
+	.neugekommen {font-weight: bold;color: green}
 	h1 {font-weight: bold;}
-
 	.wrapper {text-align: center; border-radius: 1rem; position: relative; margin: 3rem; background-color: #cc9966; min-height: 100%; padding: 2rem; box-shadow: 10px 10px 41px 5px rgba(0,0,0,0.18); font-family: Arial, Helvetica, sans-serif }
-
 	</style>
 </head>
 <body>
-
 	<div class="wrapper">
 		<h1>ORF News</h1>
-
-
 	</div>
-
 </body>
 </html>
