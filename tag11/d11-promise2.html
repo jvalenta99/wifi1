@@ -1,0 +1,46 @@
+<!doctype html>
+<html>
+<head>
+	<title></title>
+	<meta charset="utf-8">
+	<script src="jquery-3.2.1.min.js"></script>
+	<script>
+
+			$.ajaxSetup({
+				url:'http://wifi.1av.at/507/promisetest.php', // number => x
+				type:'POST',
+				dataType:'json'
+			});
+
+
+
+
+			var add1=function(a){
+				return new Promise( function(resolve,reject){
+						$.ajax({
+							data:{number:a},
+							success:function( resp ) {
+								resolve( resp.x * 1 + 1	);
+							}
+						});//ajax
+					});
+				}//promise
+
+
+
+			add1(5).
+				then(add1).
+				then(add1).
+				then(function(result){alert(result)})
+
+
+
+	</script>
+	<style>
+	</style>
+</head>
+<body>
+
+
+</body>
+</html>
