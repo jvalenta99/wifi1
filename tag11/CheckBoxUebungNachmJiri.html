@@ -1,0 +1,115 @@
+<!doctype html>
+<html>
+<head>
+	<title></title>
+	<meta charset="utf-8">
+	<script src="jquery-3.2.1.min.js"></script>
+	<script src="jquery-formatnewslauf.js"></script>
+	<script>
+	;(function() {
+		"use strict";
+		$( document ).ready( function() {
+			var state="off", stateP="off";
+			var ctx = $( '#c' ).get(0).getContext( '2d' );
+
+			ctx.strokeStyle = '#000';
+			ctx.lineWidth = 2;
+			ctx.beginPath();
+			ctx.moveTo( 5, 5 );
+			ctx.lineTo( 45, 5 );
+			ctx.lineTo( 45, 45);
+			ctx.lineTo( 5, 45);
+
+			ctx.closePath();
+
+			ctx.moveTo( 10,10 );
+			ctx.lineTo( 40, 10 );
+			ctx.lineTo( 40, 40);
+
+			ctx.lineTo( 10, 40 );
+			ctx.closePath();
+		ctx.stroke();
+
+			$( '#c' ).on( 'click', function() {
+				if (state=="off"){
+					maleKreuz();
+					state="on"
+					console.log(state);
+				}
+				else {
+					deleteKreuz();
+					state="off";
+					console.log(state);
+				}
+		});
+			var maleKreuz= function(){
+
+				ctx.lineWidth = 2;
+				ctx.moveTo( 15,15 );
+				ctx.lineTo( 35, 35 );
+				ctx.moveTo( 35,15 );
+
+				ctx.lineTo( 15, 35 );
+				ctx.closePath();
+				ctx.stroke();
+			}
+			var deleteKreuz= function(){
+				ctx.clearRect(14,14,22,22);
+			}
+
+/* check Box  */
+
+		var ctx2 = $( '#d' ).get(0).getContext( '2d' );
+
+		ctx2.strokeStyle = '#000';
+		ctx2.lineWidth = 2;
+		ctx2.beginPath();
+		ctx2.arc( 25,25,21,0,2*Math.PI );
+		ctx2.stroke();
+
+		$( '#d' ).on( 'click', function() {
+			if (stateP=="off"){
+				malePunkt();
+				stateP="on";
+				console.log(stateP);
+			}
+			else {
+				deletePunkt();
+				stateP="off";
+				console.log(stateP);
+			}
+
+		});
+
+		var malePunkt = function(){
+			ctx2.strokeStyle = '#000';
+			ctx2.lineWidth = 2;
+			ctx2.beginPath();
+			ctx2.arc( 25,25,12,0,2*Math.PI );
+			ctx2.stroke();
+			ctx2.fill();
+		}
+
+		var deletePunkt = function(){
+			ctx2.strokeStyle = '#FFF'
+			ctx2.lineWidth = 2;
+			ctx2.beginPath();
+			ctx2.arc( 25,25,12,0,2*Math.PI );
+			ctx2.stroke();
+			ctx2.fill();
+		}
+
+		}) //document ready
+	}());
+	</script>
+	<style>
+	/*canvas { border:1px solid #000; }*/
+	</style>
+</head>
+<body>
+	<canvas id="c" width="50" height="50" ></canvas>
+
+	<canvas id="d" width="50" height="50" ></canvas>
+
+</body>
+</html>
