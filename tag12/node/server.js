@@ -15,11 +15,14 @@ http.createServer( function(req, res ){
 }).listen(54321);
 */
 
+//...
 var express = require( 'express');
 var app = express();
 
 var server = app.listen( 54321, function(){
-  console.log( 'Server läuft.');
+  console.log( 'Server läuft 54321.');
+})
 
-
+app.get( '/', function(req,res){
+  res.end( 'hallo welt');
 })
