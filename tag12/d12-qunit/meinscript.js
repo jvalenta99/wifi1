@@ -9,7 +9,7 @@ if (isFinite(b)) b *=1;
   return a+b;
 }
 
-var crate = function() {
+var create = function() {
   var werte = arguments.sort();
   var o = {};
   //var indexe = 'abcde';
