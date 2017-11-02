@@ -18,11 +18,23 @@ http.createServer( function(req, res ){
 //...
 var express = require( 'express');
 var app = express();
+var fs = require( 'fs');
 
 var server = app.listen( 54321, function(){
   console.log( 'Server läuft 54321.');
 })
 
+app.use( express.static( 'inc'));
+
 app.get( '/', function(req,res){
-  res.end( 'hallo welt');
+  fs.readFile('index.html', function(err, data){
+    if( !err ) {
+      res.writeHead(200, {'Content-Type':'text/html'});
+      res.end( data );
+    }
+  })
+})
+
+app.pst( '/getsomething', function(req, res) {
+  res.end( 'Klick mich besser');
 })
