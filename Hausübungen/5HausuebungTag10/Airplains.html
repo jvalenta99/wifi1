@@ -4,85 +4,130 @@
 	<title></title>
 	<meta charset="utf-8">
 	<script src="jquery-3.2.1.min.js"></script>
-	<script src="jquery-formatnewslauf.js"></script>
+	<script src="wifi.funktionen.js"> </script>
 	<script>
 	;(function() {
 		"use strict";
 		$( document ).ready( function() {
-			var airportsArr =[];
 
-			var airport = {
-				name:'',
-				posX:0,
-				posY:0,
-				diagonale:10,
-				zeichnen:function(){
-					//Zeichne Flughafen
+			var flughafenArr = [];
+			var flugzeugArr = []
+
+			var Flughafen = function(left,top,vx,vy,color,name){
+				this.left = left;
+				this.top = top;
+				this.vx = vx;
+				this.vy = vy;
+				this.color = color;
+				this.name = name;
+				this.pointdiv= $( '<div>').html(this.name).css({position:'absolute','background-color':this.color,
+				width:'20px', height:'20px', 'text-align': 'center', 'border-radius':'10px',
+				 border: '1px solid black', top:this.top, left:this.left,'z-index': '-1' })
+				 .appendTo( '#space' );
+			} //Flughafen Klasse
+
+
+			var Flugzeug = function(x,y,vx,vy,zielx,ziely,zielname){
+				this.posx = x;
+				this.posy = y;
+				this.vx = vx;
+				this.vy = vy;
+				this.zielx = zielx;
+				this.ziely = ziely;
+				this.zielname = zielname;
+				this.alpha = 0;
+				this.svg = $( '<a>' ).appendTo( '#space' );
+				this.fliege();
+			} //Flugzeug Klasse
+
+			Flugzeug.prototype.fliege = function() {
+
+				this.posx += this.vx;
+				this.posy += this.vy;
+				this.alpha = Math.atan2(this.vy,this.vx);
+				//console.log(this.alpha);
+
+				if ( this.posx >= 395 || this.posx <= -5 ) {
+					this.vx *= -1;
 				}
+				if ( this.posy >= 395 || this.posy <= -5 ) {
+					this.vy *= -1;
+				}
+				/*if ( this.vx < 0 ) {
+					this.alpha += Math.PI;
+				}
+				*/
+				this.svg.css({
+					left:this.posx,
+					top:this.posy,
+					transform:'rotate('+this.alpha+'rad)'
+				});
+				//console.log('zielx:'+ this.zielx + 'ziely:' + this.ziely + 'name' + this.zielname);
+				setTimeout( this.fliege.bind(this), 20 );
+				//console.log("flugzeug hergestellt");
+			} //fliege Flugzeug
 
+				var start = function(){
+					var chooseFHafen = zufallsZahl(0,flughafenArr.length-1);
 
+					var vx= zufallsZahl(30,80)*0.01*flughafenArr[chooseFHafen].vx;
+					var vy= zufallsZahl(30,80)*0.01*flughafenArr[chooseFHafen].vy;
+					console.log(vx+','+vy);
+					var sx=flughafenArr[chooseFHafen].left;
+
+					var sy=flughafenArr[chooseFHafen].top;
+					var zielx=flughafenArr[chooseFHafen].left;
+					var ziely=flughafenArr[chooseFHafen].top;
+					var zielname=flughafenArr[chooseFHafen].name;
+
+					//console.log(sx);
+					flugzeugArr.push(new Flugzeug(sx,sy,vx,vy,zielx,ziely,zielname));
 			}
 
 
 
 
+			//flugzeugArr.push(new Flugzeug(5,100));
+			//flugzeugArr.push(new Flugzeug(100,5));
+			flughafenArr.push(new Flughafen(5,5,1,1,'red','A'));
+			flughafenArr.push(new Flughafen(5,375,1,-1,'blue','B'));
+			flughafenArr.push(new Flughafen(375,5,-1,1,'green','D'));
+			flughafenArr.push(new Flughafen(375,375,-1,-1,'yellow','C'));
+
+			start();
+			setInterval(start,10000);
+
+
 		}) //document ready
-	}());
+	}());//inkapsulierung function
 	</script>
 	<style>
-		#space {width: 400px; height: 400px; border-style: solid; }
-		#pepa  {transform:  translate(100px,100px) rotate(45deg);position: relative;}
+		#space {
+				position: relative;
+			 	width: 400px;
+			  height: 400px;
+				border-style: solid;
+			 }
+
+		#flugzeug_template { display:none; }
+		a { position:absolute; /*border-radius:50%; background:red;*/
+			display:block;
+			width:20px;
+		 	height:20px;
+		  background:url(airplane/black-plane.svg) 0 0;
+			background-size:100% 100%;
+		}
+
 	</style>
 </head>
 <body>
+	<h1>Flugspiel</h1>
 	<div id="space">
 
 
 
+
 	</div>
-
-
-<div id="template">
-	<svg id="pepa" version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
-		 width="20px" height="20px" viewBox="0 0 510 510" style="enable-background:new 0 0 510 510;" xml:space="preserve">
-	<g>
-		<g id="flights">
-			<path fill="red" d="M510,255c0-20.4-17.85-38.25-38.25-38.25H331.5L204,12.75h-51l63.75,204H76.5l-38.25-51H0L25.5,255L0,344.25h38.25
-				l38.25-51h140.25l-63.75,204h51l127.5-204h140.25C492.15,293.25,510,275.4,510,255z"/>
-		</g>
-	</g>
-	<g>
-	</g>
-	<g>
-	</g>
-	<g>
-	</g>
-	<g>
-	</g>
-	<g>
-	</g>
-	<g>
-	</g>
-	<g>
-	</g>
-	<g>
-	</g>
-	<g>
-	</g>
-	<g>
-	</g>
-	<g>
-	</g>
-	<g>
-	</g>
-	<g>
-	</g>
-	<g>
-	</g>
-	<g>
-	</g>
-	</svg>
-</div>
 
 </body>
 </html>
