@@ -9,9 +9,11 @@
 	;(function() {
 		"use strict";
 		$( document ).ready( function() {
-
+			var wahlflugzeug;
 			var flughafenArr = [];
-			var flugzeugArr = []
+			var flugzeugArr = [];
+			var timeout;
+			var gameover = false;
 
 			var Flughafen = function(left,top,vx,vy,color,name){
 				this.left = left;
@@ -20,7 +22,9 @@
 				this.vy = vy;
 				this.color = color;
 				this.name = name;
-				this.pointdiv= $( '<div>').html(this.name).css({position:'absolute','background-color':this.color,
+				this.pointdiv= $( '<div>').html(this.name)
+
+				.css({position:'absolute','background-color':this.color,
 				width:'20px', height:'20px', 'text-align': 'center', 'border-radius':'10px',
 				 border: '1px solid black', top:this.top, left:this.left,'z-index': '-1' })
 				 .appendTo( '#space' );
@@ -36,10 +40,25 @@
 				this.ziely = ziely;
 				this.zielname = zielname;
 				this.alpha = 0;
+				this.active = false;
+				this.id=-1;
 				this.svg = $( '<a>' ).appendTo( '#space' );
-				this.fliege();
+				this.logik();
+				//var inter = setInterval(this.fliege.bind(this),20);
+/*
+				if (!gameover) {
+					console.log(gameover);
+				var inter = setInterval(this.fliege.bind(this),20);
+			} else {
+				clearInterval(inter);
+				console.log('interval');
+			}
+*/
 			} //Flugzeug Klasse
 
+			Flugzeug.prototype.logik = function() {
+				this.fliege();
+			}
 			Flugzeug.prototype.fliege = function() {
 
 				this.posx += this.vx;
@@ -60,19 +79,67 @@
 				this.svg.css({
 					left:this.posx,
 					top:this.posy,
-					transform:'rotate('+this.alpha+'rad)'
-				});
+					transform:'rotate('+this.alpha+'rad)',
+				}).on('click', function(event){
+					event.preventDefault();
+					this.deselectAll();
+					this.active=true;
+					//console.log("clicked"+ this.active);
+					//this.active=true;
+
+				}.bind(this));
+
+				if(this.active){
+					this.svg.css({'background-image':'url(airplane/black-plane-red.svg)'});
+					//console.log("active? " + this.active);
+				} else {
+					this.svg.css({'background-image':'url(airplane/black-plane.svg)'});
+					//console.log("active2? " + this.active);
+				}
+				//console.log('x:' + this.posx+ 'y: ' + this.posy+ 'id: ' + this.id);
+				this.findCrash(this.posx, this.posy, this.id);
+				timeout = setTimeout( this.fliege.bind(this), 20 ); //rekursion fliegen
+				//this.svg.find('a').css({})
 				//console.log('zielx:'+ this.zielx + 'ziely:' + this.ziely + 'name' + this.zielname);
-				setTimeout( this.fliege.bind(this), 20 );
-				//console.log("flugzeug hergestellt");
+				/*
+				console.log(this.gameover);
+				if ( !this.gameover){
+					timeout = setTimeout( this.fliege.bind(this), 20 ); //rekursion fliegen
+				} else {
+					clearTimeout(timeout);
+				}
+				*/
 			} //fliege Flugzeug
 
-				var start = function(){
+			Flugzeug.prototype.deselectAll = function(){
+				for (var i = 0; i < flugzeugArr.length; i++) {
+					flugzeugArr[i].active=false;
+				}
+			}
+
+			Flugzeug.prototype.findCrash = function(x,y,id){
+				//console.log('x: '+ x.toFixed(2) + 'y: '+ y.toFixed(2) + 'id: '+ id);
+				for (var i = 0; i < flugzeugArr.length; i++) {
+					var diffx = Math.abs(x-flugzeugArr[i].posx);
+					var diffy = Math.abs(y-flugzeugArr[i].posy);
+					if (((diffx)<20)&&((diffy)<20)&&(id !==i)) {
+						//console.log ('game over Ids: '  + id +','+ i +'x: ' +diffx+ 'y: ' + diffy);
+
+						//console.log('x: ' + x*1-flugzeugArr[i].posx*1 + 'y: ' + y*1-flugzeugArr[i].posy*1)
+						gameover=true;
+						console.log('gameover:' + gameover)
+					}
+
+				} //for
+			}
+
+
+				var createFlugzeug = function(){
 					var chooseFHafen = zufallsZahl(0,flughafenArr.length-1);
 
-					var vx= zufallsZahl(30,80)*0.01*flughafenArr[chooseFHafen].vx;
-					var vy= zufallsZahl(30,80)*0.01*flughafenArr[chooseFHafen].vy;
-					console.log(vx+','+vy);
+					var vx= zufallsZahl(10,90)*0.01*flughafenArr[chooseFHafen].vx;
+					var vy= zufallsZahl(10,90)*0.01*flughafenArr[chooseFHafen].vy;
+					//console.log(vx+','+vy);
 					var sx=flughafenArr[chooseFHafen].left;
 
 					var sy=flughafenArr[chooseFHafen].top;
@@ -82,10 +149,12 @@
 
 					//console.log(sx);
 					flugzeugArr.push(new Flugzeug(sx,sy,vx,vy,zielx,ziely,zielname));
+					//console.log('length' + flugzeugArr.length);
+					flugzeugArr[flugzeugArr.length-1].id = flugzeugArr.length-1;
+					//console.log('zielname' + zielname);
+					//console.log(flugzeugArr);
+					//flugzeugArr[length-1].id = length-1;
 			}
-
-
-
 
 			//flugzeugArr.push(new Flugzeug(5,100));
 			//flugzeugArr.push(new Flugzeug(100,5));
@@ -94,14 +163,19 @@
 			flughafenArr.push(new Flughafen(375,5,-1,1,'green','D'));
 			flughafenArr.push(new Flughafen(375,375,-1,-1,'yellow','C'));
 
-			start();
-			setInterval(start,10000);
-
+			createFlugzeug();
+			setInterval(createFlugzeug,2000);
 
 		}) //document ready
 	}());//inkapsulierung function
 	</script>
 	<style>
+
+		#space>div {
+			-webkit-user-select: none;
+	    -moz-user-select: none;
+	    user-select: none;
+		}
 		#space {
 				position: relative;
 			 	width: 400px;
@@ -110,11 +184,11 @@
 			 }
 
 		#flugzeug_template { display:none; }
-		a { position:absolute; /*border-radius:50%; background:red;*/
+		a { position:absolute;
 			display:block;
 			width:20px;
 		 	height:20px;
-		  background:url(airplane/black-plane.svg) 0 0;
+		  //background-image:url(airplane/black-plane.svg);
 			background-size:100% 100%;
 		}
 
@@ -123,9 +197,6 @@
 <body>
 	<h1>Flugspiel</h1>
 	<div id="space">
-
-
-
 
 	</div>
 
