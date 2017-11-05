@@ -14,6 +14,7 @@
 			var flugzeugArr = [];
 			var timeout;
 			var gameover = false;
+			var laststart=-1;
 
 			var Flughafen = function(left,top,vx,vy,color,name){
 				this.left = left;
@@ -42,27 +43,25 @@
 				this.alpha = 0;
 				this.active = false;
 				this.id=-1;
+				this.interv = 0;
 				this.svg = $( '<a>' ).appendTo( '#space' );
 				this.logik();
-				//var inter = setInterval(this.fliege.bind(this),20);
-/*
-				if (!gameover) {
-					console.log(gameover);
-				var inter = setInterval(this.fliege.bind(this),20);
-			} else {
-				clearInterval(inter);
-				console.log('interval');
-			}
-*/
+
 			} //Flugzeug Klasse
 
 			Flugzeug.prototype.logik = function() {
-				this.fliege();
+				if (gameover){
+					clearInterval(this.interv.bind(this));
+				} else {
+					this.interv = setInterval( this.fliege.bind(this), 20 );
+				}
 			}
-			Flugzeug.prototype.fliege = function() {
 
+			Flugzeug.prototype.fliege = function() {
+				if(!gameover){
 				this.posx += this.vx;
 				this.posy += this.vy;
+				}
 				this.alpha = Math.atan2(this.vy,this.vx);
 				//console.log(this.alpha);
 
@@ -72,10 +71,6 @@
 				if ( this.posy >= 395 || this.posy <= -5 ) {
 					this.vy *= -1;
 				}
-				/*if ( this.vx < 0 ) {
-					this.alpha += Math.PI;
-				}
-				*/
 				this.svg.css({
 					left:this.posx,
 					top:this.posy,
@@ -84,31 +79,17 @@
 					event.preventDefault();
 					this.deselectAll();
 					this.active=true;
-					//console.log("clicked"+ this.active);
-					//this.active=true;
+					$('#info').html(this.zielname);
 
 				}.bind(this));
 
 				if(this.active){
 					this.svg.css({'background-image':'url(airplane/black-plane-red.svg)'});
-					//console.log("active? " + this.active);
 				} else {
 					this.svg.css({'background-image':'url(airplane/black-plane.svg)'});
-					//console.log("active2? " + this.active);
 				}
-				//console.log('x:' + this.posx+ 'y: ' + this.posy+ 'id: ' + this.id);
 				this.findCrash(this.posx, this.posy, this.id);
-				timeout = setTimeout( this.fliege.bind(this), 20 ); //rekursion fliegen
-				//this.svg.find('a').css({})
-				//console.log('zielx:'+ this.zielx + 'ziely:' + this.ziely + 'name' + this.zielname);
-				/*
-				console.log(this.gameover);
-				if ( !this.gameover){
-					timeout = setTimeout( this.fliege.bind(this), 20 ); //rekursion fliegen
-				} else {
-					clearTimeout(timeout);
-				}
-				*/
+
 			} //fliege Flugzeug
 
 			Flugzeug.prototype.deselectAll = function(){
@@ -122,12 +103,14 @@
 				for (var i = 0; i < flugzeugArr.length; i++) {
 					var diffx = Math.abs(x-flugzeugArr[i].posx);
 					var diffy = Math.abs(y-flugzeugArr[i].posy);
-					if (((diffx)<20)&&((diffy)<20)&&(id !==i)) {
+					if (((diffx)<7)&&((diffy)<7)&&(id !==i)) {
 						//console.log ('game over Ids: '  + id +','+ i +'x: ' +diffx+ 'y: ' + diffy);
 
 						//console.log('x: ' + x*1-flugzeugArr[i].posx*1 + 'y: ' + y*1-flugzeugArr[i].posy*1)
+						flugzeugArr[i].active = true;
+						flugzeugArr[id].active = true;
 						gameover=true;
-						console.log('gameover:' + gameover)
+						//console.log('gameover:' + gameover)
 					}
 
 				} //for
@@ -135,7 +118,10 @@
 
 
 				var createFlugzeug = function(){
-					var chooseFHafen = zufallsZahl(0,flughafenArr.length-1);
+					//verhindern den Start aus dem gleichem Flughafen nacheinander
+					do{	var chooseFHafen = zufallsZahl(0,flughafenArr.length-1);}
+					while(flughafenArr[chooseFHafen].name==laststart);
+					laststart=flughafenArr[chooseFHafen].name;
 
 					var vx= zufallsZahl(10,90)*0.01*flughafenArr[chooseFHafen].vx;
 					var vy= zufallsZahl(10,90)*0.01*flughafenArr[chooseFHafen].vy;
@@ -148,7 +134,9 @@
 					var zielname=flughafenArr[chooseFHafen].name;
 
 					//console.log(sx);
+
 					flugzeugArr.push(new Flugzeug(sx,sy,vx,vy,zielx,ziely,zielname));
+
 					//console.log('length' + flugzeugArr.length);
 					flugzeugArr[flugzeugArr.length-1].id = flugzeugArr.length-1;
 					//console.log('zielname' + zielname);
@@ -156,8 +144,7 @@
 					//flugzeugArr[length-1].id = length-1;
 			}
 
-			//flugzeugArr.push(new Flugzeug(5,100));
-			//flugzeugArr.push(new Flugzeug(100,5));
+
 			flughafenArr.push(new Flughafen(5,5,1,1,'red','A'));
 			flughafenArr.push(new Flughafen(5,375,1,-1,'blue','B'));
 			flughafenArr.push(new Flughafen(375,5,-1,1,'green','D'));
@@ -199,6 +186,7 @@
 	<div id="space">
 
 	</div>
+	<h2 id="info"></h2>
 
 </body>
 </html>
