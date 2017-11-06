@@ -64,14 +64,12 @@
 			}
 
 			Flugzeug.prototype.fliege = function() {
-				var diffx = Math.abs ( this.posx - this.zielx );
-				var diffy = Math.abs ( this.posy - this.ziely );
-				if( diffx < 30 &&  diffy < 30 ) {
-					console.log( 'flug im Ziel' );
-					this.imZiel = true;
+				if( (Math.abs(this.posx-this.zielx))<15)&&((this.posy-this.ziely)<15) {
+					console.log('flug im Ziel');
+					this.imZiel=true;
 				}
 
-				if(!gameover){
+				if(!gameover || !this.imZiel){
 				this.posx += this.vx;
 				this.posy += this.vy;
 				this.alpha = Math.atan2(this.vy,this.vx);
@@ -128,17 +126,9 @@
 
 				} //for
 			}
-/*
-			Flugzeug.prototype.imZiel = function(x,y,name){
-				var zielx =find arr...
-				var ziely =find arr...
-				var diffx =Math.abs(...
-				var diffy =Math.abs(...
-				if( (diffx)<15)&&((diffy)<15) {
-					this.imZiel=true;
-				}
-			}
-*/
+
+
+
 				var createFlugzeug = function(){
 					//verhindern den Start aus dem gleichem Flughafen nacheinander
 					do{	var chooseFHafen = zufallsZahl(0,flughafenArr.length-1);}
