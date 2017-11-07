@@ -36,6 +36,7 @@
 			} //Flughafen Klasse
 
 			var Flugzeug = function(x,y,vx,vy,zielx,ziely,zielname){
+
 				this.posx = x;
 				this.posy = y;
 				this.vx = vx;
@@ -127,7 +128,7 @@
 						flugzeugArr[i].active = true;
 						flugzeugArr[id].active = true;
 						gameover=true;
-						console.log('gameover:' + gameover);
+						//console.log('gameover:' + gameover);
 						$('#over').css({display: 'block'});
 
 					}
@@ -136,7 +137,10 @@
 
 				var createFlugzeug = function(){
 					//verhindern den Start aus dem gleichem Flughafen nacheinander
-					do{	var chooseFHafen = zufallsZahl(0,flughafenArr.length-1);}
+					var chooseFHafen;
+					do{	var temp2 = zufallsZahl(0,flughafenArr.length-1);
+						chooseFHafen=temp2;
+					}
 					while(flughafenArr[chooseFHafen].name==laststart);
 					laststart=flughafenArr[chooseFHafen].name;
 
@@ -146,10 +150,13 @@
 					var sx=flughafenArr[chooseFHafen].left;
 					var sy=flughafenArr[chooseFHafen].top;
 
-					do{	var chooseZHafen = zufallsZahl(0,flughafenArr.length-1);}
+					//nicht landen im gleichen flughafen wie start
+					var chooseZHafen;
+					do{	var temp1 = zufallsZahl(0,flughafenArr.length-1);
+						chooseZHafen=temp1;
+					}
 					while(flughafenArr[chooseZHafen].name==chooseFHafen);
-
-
+					console.log('ziel: ' + chooseZHafen + 'start' + chooseFHafen);
 
 					var zielx=flughafenArr[chooseZHafen].left;
 					var ziely=flughafenArr[chooseZHafen].top;
@@ -174,38 +181,17 @@
 				var newY = e.pageY-$('#space').offset().top-2;
 				var flugX = flugzeugArr[activeID].posx
 				var flugY = flugzeugArr[activeID].posy
-				/*
-				console.log('NewX: ' + newX);
-				console.log('NewY: ' + newY);
-				console.log('posx: ' + flugzeugArr[activeID].posx);
-				console.log('posy: ' + flugzeugArr[activeID].posy);
-				console.log('vx: ' + flugzeugArr[activeID].vx);
-				console.log('vy: ' + flugzeugArr[activeID].vy);
-				console.log('-----------------------------');
-				*/
+
 				if((activeID >= 0) && !((Math.abs( newX - flugX  ) < 25) && (Math.abs( newY - flugY  ) < 25))) {
-					//console.log('activeID: '+ activeID);
-					//console.log('activeID: '+ activeID);
-					//console.log('activeID: '+ activeID);
+
 				var divid = Math.abs( newX -flugX) > Math.abs( newY - flugY )? Math.abs( newX - flugX ):Math.abs( newY - flugY  ) ;
 
 				flugzeugArr[activeID].vx =  (newX - flugX)  / divid;
 				flugzeugArr[activeID].vy =  (newY - flugY)   / divid;
 
-				//console.log('new vx: ' + flugzeugArr[activeID].vx);
-				//console.log('new vy: ' + flugzeugArr[activeID].vy);
-				//console.log('==================================');
-
 			} //if
 		})//#space change direction
 
-
-/*
-			var divid = (Math.abs(x-this.posx) > Math.abs(y-this.posy))? Math.abs(x-this.posx):Math.abs(y-this.posy);
-			this.vx = Math.abs( x - this.posx ) / divid;
-			this.vy = Math.abs( y - this.posy ) / divid;
-			//$( '#space' ).on( 'click', function() {} )
-*/
 			createFlugzeug();
 			setInterval(createFlugzeug,10000);
 
@@ -238,7 +224,6 @@
 			 	width: 400px;
 			  height: 400px;
 				border-style: solid;
-
 			 }
 
 		#flugzeug_template { display:none; }
@@ -248,7 +233,6 @@
 		 	height:20px;
 		  background-image:url(airplane/black-plane.svg);
 			background-size:100% 100%;
-
 		}
 
 		p {
