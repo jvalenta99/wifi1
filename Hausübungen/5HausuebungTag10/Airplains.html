@@ -15,6 +15,9 @@
 			var timeout;
 			var gameover = false;
 			var laststart=-1;
+			var activeID=-1;
+			var imZielCount=0;
+			var lastDestroy=-1000;
 
 
 			var Flughafen = function(left,top,vx,vy,color,name){
@@ -24,14 +27,13 @@
 				this.vy = vy;
 				this.color = color;
 				this.name = name;
-				this.pointdiv= $( '<div>').html(this.name)
+				this.pointdiv= $( '<div>' ).html( this.name )
 
 				.css({position:'absolute','background-color':this.color,
 				width:'20px', height:'20px', 'text-align': 'center', 'border-radius':'10px',
 				 border: '1px solid black', top:this.top, left:this.left,'z-index': '-1' })
 				 .appendTo( '#space' );
 			} //Flughafen Klasse
-
 
 			var Flugzeug = function(x,y,vx,vy,zielx,ziely,zielname){
 				this.posx = x;
@@ -52,15 +54,12 @@
 			} //Flugzeug Klasse
 
 			Flugzeug.prototype.logik = function() {
-				//this.interv = setInterval( this.fliege.bind(this), 20 );
-
 
 				if (gameover){
-					clearInterval(this.interv.bind(this));
+					clearInterval( this.interv.bind( this ));
 				} else {
 					this.interv = setInterval( this.fliege.bind(this), 20 );
 				}
-
 			}
 
 			Flugzeug.prototype.fliege = function() {
@@ -69,14 +68,18 @@
 				if( diffx < 30 &&  diffy < 30 ) {
 					console.log( 'flug im Ziel' );
 					this.imZiel = true;
+
+					$('#anzland').html('Anzahl Landungen: ' + (++imZielCount));
+					this.posx = lastDestroy;
+					lastDestroy += 50;
+
 				}
 
-				if(!gameover){
+				if(!gameover || this.imZiel){
 				this.posx += this.vx;
 				this.posy += this.vy;
 				this.alpha = Math.atan2(this.vy,this.vx);
 			}
-				//console.log(this.alpha);
 
 				if ( this.posx >= 395 || this.posx <= -5 ) {
 					this.vx *= -1;
@@ -92,7 +95,8 @@
 					event.preventDefault();
 					this.deselectAll();
 					this.active=true;
-					$('#info').html(this.zielname);
+					$('#info').html('Zielflughafen: ' + this.zielname);
+					activeID = this.id;
 
 				}.bind(this));
 
@@ -101,7 +105,7 @@
 				} else {
 					this.svg.css({'background-image':'url(airplane/black-plane.svg)'});
 				}
-				this.findCrash(this.posx, this.posy, this.id);
+				setTimeout(this.findCrash(this.posx, this.posy, this.id),2000);
 
 			} //fliege Flugzeug
 
@@ -123,22 +127,13 @@
 						flugzeugArr[i].active = true;
 						flugzeugArr[id].active = true;
 						gameover=true;
-						//console.log('gameover:' + gameover)
-					}
+						console.log('gameover:' + gameover);
+						$('#over').css({display: 'block'});
 
+					}
 				} //for
-			}
-/*
-			Flugzeug.prototype.imZiel = function(x,y,name){
-				var zielx =find arr...
-				var ziely =find arr...
-				var diffx =Math.abs(...
-				var diffy =Math.abs(...
-				if( (diffx)<15)&&((diffy)<15) {
-					this.imZiel=true;
-				}
-			}
-*/
+			} //findCrash
+
 				var createFlugzeug = function(){
 					//verhindern den Start aus dem gleichem Flughafen nacheinander
 					do{	var chooseFHafen = zufallsZahl(0,flughafenArr.length-1);}
@@ -149,11 +144,16 @@
 					var vy= zufallsZahl(10,90)*0.01*flughafenArr[chooseFHafen].vy;
 					//console.log(vx+','+vy);
 					var sx=flughafenArr[chooseFHafen].left;
-
 					var sy=flughafenArr[chooseFHafen].top;
-					var zielx=flughafenArr[chooseFHafen].left;
-					var ziely=flughafenArr[chooseFHafen].top;
-					var zielname=flughafenArr[chooseFHafen].name;
+
+					do{	var chooseZHafen = zufallsZahl(0,flughafenArr.length-1);}
+					while(flughafenArr[chooseZHafen].name==chooseFHafen);
+
+
+
+					var zielx=flughafenArr[chooseZHafen].left;
+					var ziely=flughafenArr[chooseZHafen].top;
+					var zielname=flughafenArr[chooseZHafen].name;
 
 					flugzeugArr.push(new Flugzeug(sx,sy,vx,vy,zielx,ziely,zielname));
 					flugzeugArr[flugzeugArr.length-1].id = flugzeugArr.length-1;
@@ -165,14 +165,69 @@
 			flughafenArr.push(new Flughafen(375,5,-1,1,'green','D'));
 			flughafenArr.push(new Flughafen(375,375,-1,-1,'yellow','C'));
 
+			//change direction flugzeug
+
+			$('#space').on('click',function(e){
+				console.log ('actievid: ' + activeID);
+
+				var newX = e.pageX-$('#space').offset().left-2;
+				var newY = e.pageY-$('#space').offset().top-2;
+				var flugX = flugzeugArr[activeID].posx
+				var flugY = flugzeugArr[activeID].posy
+				/*
+				console.log('NewX: ' + newX);
+				console.log('NewY: ' + newY);
+				console.log('posx: ' + flugzeugArr[activeID].posx);
+				console.log('posy: ' + flugzeugArr[activeID].posy);
+				console.log('vx: ' + flugzeugArr[activeID].vx);
+				console.log('vy: ' + flugzeugArr[activeID].vy);
+				console.log('-----------------------------');
+				*/
+				if((activeID >= 0) && !((Math.abs( newX - flugX  ) < 25) && (Math.abs( newY - flugY  ) < 25))) {
+					//console.log('activeID: '+ activeID);
+					//console.log('activeID: '+ activeID);
+					//console.log('activeID: '+ activeID);
+				var divid = Math.abs( newX -flugX) > Math.abs( newY - flugY )? Math.abs( newX - flugX ):Math.abs( newY - flugY  ) ;
+
+				flugzeugArr[activeID].vx =  (newX - flugX)  / divid;
+				flugzeugArr[activeID].vy =  (newY - flugY)   / divid;
+
+				//console.log('new vx: ' + flugzeugArr[activeID].vx);
+				//console.log('new vy: ' + flugzeugArr[activeID].vy);
+				//console.log('==================================');
+
+			} //if
+		})//#space change direction
+
+
+/*
+			var divid = (Math.abs(x-this.posx) > Math.abs(y-this.posy))? Math.abs(x-this.posx):Math.abs(y-this.posy);
+			this.vx = Math.abs( x - this.posx ) / divid;
+			this.vy = Math.abs( y - this.posy ) / divid;
+			//$( '#space' ).on( 'click', function() {} )
+*/
 			createFlugzeug();
-			setInterval(createFlugzeug,2000);
+			setInterval(createFlugzeug,10000);
 
 		}) //document ready
 	}());//inkapsulierung function
 	</script>
 	<style>
 
+		h1 {
+			 width: 374px;
+			 color: black;
+			 background-color: #268fcc;
+			 padding: 15px;
+			 text-align: center;
+		}
+		h2 {
+			width: 384px;
+			padding: 10px;
+			background-color: #cfebfc;
+			color: #054166;
+			text-align: center;
+		}
 		#space>div {
 			-webkit-user-select: none;
 	    -moz-user-select: none;
@@ -183,6 +238,7 @@
 			 	width: 400px;
 			  height: 400px;
 				border-style: solid;
+
 			 }
 
 		#flugzeug_template { display:none; }
@@ -190,8 +246,19 @@
 			display:block;
 			width:20px;
 		 	height:20px;
-		  //background-image:url(airplane/black-plane.svg);
+		  background-image:url(airplane/black-plane.svg);
 			background-size:100% 100%;
+
+		}
+
+		p {
+			display: none;
+			width: 374px;
+			color: red;
+			background-color: yellow;
+			padding: 15px;
+			text-align: center;
+			font-size: 2rem;
 		}
 
 	</style>
@@ -201,7 +268,10 @@
 	<div id="space">
 
 	</div>
-	<h2 id="info"></h2>
+	<p id="over">Game over</p>
+	<h2 id="info">Zielflughafen: </h2>
+	<h2 id="anzland">Anzahl Landungen: 0</h2>
+
 
 </body>
 </html>
