@@ -28,7 +28,6 @@
 				this.color = color;
 				this.name = name;
 				this.pointdiv= $( '<div>' ).html( this.name )
-
 				.css({position:'absolute','background-color':this.color,
 				width:'20px', height:'20px', 'text-align': 'center', 'border-radius':'10px',
 				 border: '1px solid black', top:this.top, left:this.left,'z-index': '-1' })
@@ -138,7 +137,8 @@
 				var createFlugzeug = function(){
 					//verhindern den Start aus dem gleichem Flughafen nacheinander
 					var chooseFHafen;
-					do{	var temp2 = zufallsZahl(0,flughafenArr.length-1);
+					var temp2;
+					do{ temp2 = zufallsZahl(0,flughafenArr.length-1);
 						chooseFHafen=temp2;
 					}
 					while(flughafenArr[chooseFHafen].name==laststart);
@@ -152,7 +152,8 @@
 
 					//nicht landen im gleichen flughafen wie start
 					var chooseZHafen;
-					do{	var temp1 = zufallsZahl(0,flughafenArr.length-1);
+					var temp1;
+					do{	temp1 = zufallsZahl(0,flughafenArr.length-1);
 						chooseZHafen=temp1;
 					}
 					while(flughafenArr[chooseZHafen].name==chooseFHafen);
@@ -168,7 +169,7 @@
 			}
 
 			flughafenArr.push(new Flughafen(5,5,1,1,'red','A'));
-			flughafenArr.push(new Flughafen(5,375,1,-1,'blue','B'));
+			flughafenArr.push(new Flughafen(5,375,1,-1,'#268fcc','B'));
 			flughafenArr.push(new Flughafen(375,5,-1,1,'green','D'));
 			flughafenArr.push(new Flughafen(375,375,-1,-1,'yellow','C'));
 
