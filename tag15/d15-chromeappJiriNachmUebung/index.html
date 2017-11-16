@@ -1,0 +1,52 @@
+<!doctype html>
+<html>
+<head>
+	<title>Hallo Chrome!</title>
+	<meta charset="utf-8">
+
+
+</head>
+
+<style >
+	#wrapper {
+
+	}
+
+#red { background-color: red}
+#black { background-color: black}
+#green { background-color: green}
+#yellow { background-color: yellow}
+	button {
+		background-color: #4CAF50;
+    border: none;
+    color: white;
+    padding: 15px 25px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    margin: 4px 2px;
+    cursor: pointer;
+	}
+	canvas {
+		border:1px solid black;
+	}
+</style>
+<body>
+	<div id="wrapcolor">
+		<button id="red">RED</button>
+		<button id="black">BLACK</button>
+		<button id="green">GREEN</button>
+		<button id="yellow">YELLOW</button>
+	</div>
+	<canvas id="c" width="400" height="250" ></canvas>
+	<div id="wrapsave">
+		<button id="save">Save</button>
+	</div>
+
+	<script src="jquery-3.2.1.min.js"></script>
+	<script src="myFileHandler.js"></script>
+	<script src="application.js"></script>
+
+</body>
+</html>
