@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Quizfrage erstellen</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+ <div class="wrapper">
+    <nav class="main-nav">
+        <h2>Quizfragen-Verwaltung <a href="/create">Quizfrage erstellen</a></h2>
+    </nav>
+    <main>
+        <form method="post" id="createForm">
+            <label for="frage">Quizfrage:</label>
+            <input type="text" id="frage" name="frage" required>
+            <label for="antwort1">Antwort 1:</label>
+            <input type="text" id="antwort1" name="antwort1" required>
+            <label for="antwort2">Antwort 2:</label>
+            <input type="text" id="antwort2" name="antwort2" required>
+            <label for="antwort3">Antwort 3:</label>
+            <input type="text" id="antwort3" name="antwort3" required>
+            <label for="antwort4">Antwort 4:</label>
+            <input type="text" id="antwort4" name="antwort4" required>
+            <input type="submit" value="Datensatz speichern">
+            <div id="output"></div>
+        </form>
+    </main>
+ </div>
+ <script src="jquery-3.2.1.min.js"></script>
+ <script>
+
+     $(document).ready(function() {
+
+
+        $('#createForm').on('submit', erstelleDatensatz);
+
+        function erstelleDatensatz( e ) {
+            e.preventDefault();
+            
+            var frage = $('#frage').val();
+            var antworten = [];
+
+            for(var j = 1; j < 5; j++){
+                antworten.push($('#antwort' + j).val());
+            }
+
+            $.ajax({
+                url: 'http://localhost:8080/neuequizfrage',
+                method: 'post',
+                data: {"frage": frage,"antworten":antworten.toString()},
+                success: function( data ) {
+                    
+                    $('#output').text(data);
+                    $('#frage').val('');
+
+                    for(var k = 1; k < 5; k++) {
+                        $('#antwort' + k).val('');
+                    }
+
+                    function relocate() {
+                        location.href='/';
+                    }
+
+                    setTimeout(relocate, 3000);
+                }
+            });
+        }
+    });
+    
+ </script>
+</body>
+</html>
