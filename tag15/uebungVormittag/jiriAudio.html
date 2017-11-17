@@ -1,0 +1,48 @@
+<!doctype html>
+<html>
+<head>
+	<title></title>
+	<meta charset="utf-8">
+	<script src="jquery-3.2.1.min.js"></script>
+	<script>
+$( document ).on('click','#btn_play', function() {
+	var dynVol = 1;
+	//var dynVol = 0,5;
+	//$( 'audio' ).get(0).play();
+	$( 'audio' ).each(function(){$(this).get(0).play()});
+
+	//$( 'audio' ).get(0).playbackRate = 0.1;
+	//$( 'audio' ).get(0).volume = 1;
+});
+$( document ).on('click','#btn_stop', function() {
+	$( 'audio' ).each(function(){$(this).get(0).pause()});
+	$( 'audio' ).each(function(){$(this).get(0).currentTime = 0});
+	//$( 'audio' ).get(0).volume = 0;
+	$( 'audio' ).each(function(){$(this).get(0).volume = dynVol});
+
+});
+	</script>
+	<style>
+	</style>
+</head>
+<body>
+		<audio controls loop  id="organ">
+			<source src="organ.mp3">
+		</audio>
+		<audio controls loop  id="guitar">
+			<source src="guitar.mp3">
+		</audio>
+		<audio controls  loop id="drums">
+			<source src="drums.mp3">
+		</audio>
+		<br>
+		<button id="btn_play">Play</button>
+		<button id="btn_stop">Stop</button>
+		<br>
+		<label >organ</label> <input type="checkbox" name="organ" value="true" checked ></input>
+		<br>
+		<label >guitar</label> <input type="checkbox" name="guitar" value="true" checked ></input>
+		<br>
+		<label >drums</label> <input type="checkbox" name="drums" value="true" checked ></input>
+</body>
+</html>

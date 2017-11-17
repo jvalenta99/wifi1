@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Quizfragen-Verwaltung</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+ <div class="wrapper">
+     <nav class="main-nav">
+            <h2>Quizfragen-Verwaltung <a href="/create">Quizfrage erstellen</a></h2>
+     </nav>
+     <main>
+        <div id="output"></div>
+     </main>
+ </div>
+<script src="jquery-3.2.1.min.js"></script>
+<script>
+
+    $(document).ready(function() {
+
+        $.ajax({
+            url: 'http://localhost:8080/quizfragen',
+            method: 'get',
+            success: function ( data ) {
+
+                if( data === 'keine Daten' ) {
+
+                    $('#output').text('Es sind noch keine Quizfragen vorhanden! ');
+                }
+                else{
+
+                    var tabelle = $('<table>');
+                    var tr = $('<tr>');
+
+                    $('<th>').text('ID').css({'font-weight': 'bold',color:'darkblue'}).appendTo(tr);
+                    $('<th>').text('Frage').css({'font-weight':'bold',color:'darkblue'}).appendTo(tr);
+                    $('<th>').appendTo(tr);
+                    $('<th>').appendTo(tr);
+                    tr.appendTo(tabelle);
+
+                    var content = data.split("\n");
+
+                    for(var i = 0; i < content.length; i++) {
+                       
+                        var temp = content[i].split(";");
+                        var id = '';
+
+                        if(temp.length === 3) {
+
+                            var tr = $('<tr>');
+                       
+                            for(var j = 0; j < temp.length; j++) {
+                            
+                                var t = temp[j].split(":");
+
+                                if(t[0] === 'antworten') {
+                                    continue;
+                                }
+                                else {
+                                    if(j === 0) id = t[1];
+                                    $('<td>').text(t[1]).appendTo(tr); 
+                                }
+                            }
+
+                            var editTD = $('<td>');
+                            var deleteTD = $('<td>')
+                            
+                            $('<button>').attr('id', 'editButton').data('ID', id).text('Bearbeiten').on('click', updateEntries).appendTo(editTD);
+                            $('<button>').attr('id', 'deleteButton').data('ID', id).text('Löschen').on('click', deleteEntries).appendTo(deleteTD);
+                            editTD.appendTo(tr);
+                            deleteTD.appendTo(tr);
+
+                            tr.appendTo(tabelle);
+                        }
+                    }
+
+                    tabelle.appendTo('#output');
+                }
+            }
+        });
+
+        function updateEntries( e ) {
+        
+            $.ajax({
+                url: 'http://localhost:8080/quizfragen/' + $(e.currentTarget).data('ID'),
+                method: 'get',
+                success: function ( data ) {
+            
+                    if(data === 'update.html') {
+                        window.location.href = 'update.html';
+                    }
+                }
+            });
+        }
+
+        function deleteEntries( e ) {
+            $.ajax({
+                url: 'http://localhost:8080/quizfragen/' + $(e.currentTarget).data('ID'),
+                method: 'delete',
+                success: function ( data ) {
+                    $('#output').text(data);
+                    
+                    function relocate() {
+                        location.href = '/';
+                    }
+
+                    setTimeout(relocate, 3000);
+                }
+            });
+        }
+    });
+</script>
+</body>
+</html>

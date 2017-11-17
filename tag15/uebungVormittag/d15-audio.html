@@ -1,0 +1,30 @@
+<!doctype html>
+<html>
+<head>
+	<title></title>
+	<meta charset="utf-8">
+	<script src="jquery-3.2.1.min.js"></script>
+	<script>
+$( document ).on('click','#btn_play', function() {
+	$( 'audio' ).get(0).play();
+	$( 'audio' ).get(0).playbackRate = 0.1;
+	$( 'audio' ).get(0).volume = 1;
+});
+$( document ).on('click','#btn_stop', function() {
+	$( 'audio' ).get(0).pause();
+	$( 'audio' ).get(0).currentTime = 0;
+	$( 'audio' ).get(0).volume = 0;
+
+});
+	</script>
+	<style>
+	</style>
+</head>
+<body>
+		<audio controls loop>
+			<source src="av/drums.mp3">
+		</audio>
+		<button id="btn_play">Play</button>
+		<button id="btn_stop">Stop</button>
+</body>
+</html>
