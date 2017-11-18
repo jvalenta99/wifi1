@@ -1,0 +1,27 @@
+<!doctype html>
+<html>
+<head>
+	<title></title>
+	<meta charset="utf-8">
+	<script src="jquery-3.2.1.min.js"></script>
+
+	<script>
+	;(function() {
+		"use strict";
+		$( document ).ready( function() {
+        $('.myelement').on('click', function () {
+          $(this).html('ahoj mein Button new');
+        }.bind('.myelement'));
+		}) //document ready
+	}());
+	</script>
+	<style>
+
+	</style>
+</head>
+<body>
+  <button class= "myelement">mein Button</button>
+  <button class= "myelement">mein Button2</button>
+
+</body>
+</html>
