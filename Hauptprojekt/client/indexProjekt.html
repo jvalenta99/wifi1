@@ -1,0 +1,54 @@
+<!doctype html>
+<html>
+<head>
+	<title></title>
+	<meta charset="utf-8">
+	<script src="jquery-3.2.1.min.js"></script>
+	<script>
+	var projects =[];
+		projects[0]={"klicks":"36"};
+		console.log(projects[0]);
+	;(function() {
+		"use strict";
+		$( document ).ready( function() {
+			var ahoj= {
+				"pepa":20,
+				"anzahlklicks":20,
+				"requests":[1,2,3,"ahoj"]
+		};
+		ahoj.anzahlklicks+=1
+		var ahoj2={};
+		ahoj.pepa=21;
+		ahoj.response=[1,2,3];
+
+		var ahoj2 = [];
+		ahoj2.push({"name":"pepa"});
+		ahoj2.push({"name":"josef"});
+		console.log(ahoj2);
+
+
+		//ahoj.anzahlklicks=171;
+			$.ajax({
+		    //url:'http://localhost:26893/getsomething',
+		    url:'http://localhost:26893/getprojects',
+		    method:'post',
+		    data:JSON.stringify(ahoj2),
+
+		    success:function( data ){
+
+		      console.log("data back: " + data);
+					console.log(ahoj);
+		    }
+		  });
+		}) //document ready
+	}());
+	</script>
+	<style>
+
+	</style>
+</head>
+<body>
+
+
+</body>
+</html>
