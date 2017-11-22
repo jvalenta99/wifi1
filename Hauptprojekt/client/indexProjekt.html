@@ -1,0 +1,82 @@
+<!doctype html>
+<html>
+<head>
+	<title></title>
+	<meta charset="utf-8">
+	<title>Frontend backend connector</title>
+	<link rel="stylesheet" href="jquery-ui-1.12.1.custom\jquery-ui.css"/>
+
+	<script src="jquery-ui-1.12.1.custom\	external\jquery\jquery.js"></script>
+
+	<script src="jquery-ui-1.12.1.custom\jquery-ui.js"></script>
+	<script>
+
+
+
+
+
+
+
+	;(function() {
+		"use strict";
+		$( document ).ready( function() {
+			$('#addRequest').on('click', function(){
+
+			});
+			$("#addRequest").button();
+
+
+			var ahoj= {
+				"pepa":20,
+				"anzahlklicks":20,
+				"requests":[1,2,3,"ahoj"]
+		};
+		ahoj.anzahlklicks+=1
+		var ahoj2={};
+		ahoj.pepa=21;
+		ahoj.response=[1,2,3];
+//-----------------------------------
+		var user = {};
+		user.name = "jiri"
+		user.projects =[];
+
+
+		var ahoj2 = [];
+		var obj={};
+		var key="servus";
+		var value1="jiri";
+		obj[key]=value1;
+		ahoj2.push(obj);
+		ahoj2.push({name:"josef2"});
+		console.log(ahoj2);
+		console.log(ahoj2[0].servus);
+
+
+		//ahoj.anzahlklicks=171;
+			$.ajax({
+		    //url:'http://localhost:26893/getsomething',
+		    url:'http://localhost:26893/getprojects',
+		    method:'post',
+				datatype: 'json',
+		    data:ahoj2,
+
+		    success:function( data ){
+
+		      console.log("data back: " + data);
+					console.log(ahoj2);
+		    }
+		  });
+		}) //document ready
+	}());
+	</script>
+	<style>
+
+	</style>
+</head>
+<body>
+<div class="wrapper">
+	<button id='addRequest'>add</button>
+</div>
+
+</body>
+</html>
