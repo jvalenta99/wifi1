@@ -13,10 +13,35 @@
 
 	;(function() {
 		"use strict";
-		$( document ).ready( function() {
-			$('#addProject').on('click', function(){
-				console.log("new project");
-			});
+			$( document ).ready( function() {
+				$( "#newProjectForm" ).dialog({
+	      autoOpen: false,
+				resizable: false,
+				modal: true,
+
+	      show: {
+	        effect: "blind",
+	        duration: 1000
+	      },
+	      hide: {
+	        effect: "explode",
+	        duration: 1000
+	      },
+				buttons: {
+        "Create new project": function() {
+          $( this ).dialog( "close" );
+					//create code!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        },
+        Cancel: function() {
+          $( this ).dialog( "close" );
+        }
+      }
+
+	    });
+
+			$(".wrapMainBlock").tooltip({
+	      track: true
+	    });
 			$("#accProjects").accordion({
 				heightStyle: "content"
 			});
@@ -25,68 +50,53 @@
 			var projectsArr=[];
 
 			var jsonRoot = {
-				rootObject: projectArr;
+				rootObject: projectsArr
 			}
 
-			jsonRoot.rootObject[0]=new Project("project1","Das projekt macht nichts, aber um so mehr ordentlich");
-
-
-			console.log(jsonRoot.rootObject[0].name);
 			var Project=function (name,description){
 				this.name=name;
 				this.description=description;
 				//add call
 			}
 
+			jsonRoot.rootObject[0]=new Project("project1","Das projekt macht nichts, aber um so mehr ordentlich");
 
 
+			console.log(jsonRoot.rootObject[0]);
+			$('#addProject').on('click', function(){
+				var nextProject=jsonRoot.rootObject.length;
+				jsonRoot.rootObject[nextProject]=new Project("project2","Das projekt2 macht nichts, aber um so mehr ordentlich");
+				console.log(jsonRoot);
 
+				saveData(jsonRoot);
+				$( "#newProjectForm" ).dialog( "open" );
+			});
 
-			var ahoj= {
-				"pepa":20,
-				"anzahlklicks":20,
-				"requests":[1,2,3,"ahoj"]
-		};
-		ahoj.anzahlklicks+=1
-		var ahoj2={};
-		ahoj.pepa=21;
-		ahoj.response=[1,2,3];
-//-----------------------------------
-		var user = {};
-		user.name = "jiri"
-		user.projects =[];
+			var saveData = function(obj){
+				$.ajax({
 
+			    url:'http://localhost:26893/getprojects',
+			    method:'post',
+					datatype: 'json',
+			    data:obj,
 
-		var ahoj2 = [];
-		var obj={};
-		var key="servus";
-		var value1="jiri";
-		obj[key]=value1;
-		ahoj2.push(obj);
-		ahoj2.push({name:"josef2"});
-		console.log(ahoj2);
-		console.log(ahoj2[0].servus);
+			    success:function( data ){
 
-
-		//ahoj.anzahlklicks=171;
-			$.ajax({
-		    //url:'http://localhost:26893/getsomething',
-		    url:'http://localhost:26893/getprojects',
-		    method:'post',
-				datatype: 'json',
-		    data:ahoj2,
-
-		    success:function( data ){
-
-		      console.log("data back: " + data);
-					console.log(ahoj2);
-		    }
-		  });
+			      console.log("data back: " + data);
+						return data;
+			    }
+			  }); //ajax
+			} //saveData
 		}) //document ready
-	}());
+	}()); //outer-function
 	</script>
 	<style>
-	#wrapMain {
+	body > div:first-of-type {
+		padding:0;
+		text-align: center;
+	}
+
+	.wrapMainBlock {
 		margin: 5%;
 		border-radius: 10px;
 		padding: 10px;
@@ -101,7 +111,10 @@
 	</style>
 </head>
 <body>
-<div id="wrapMain">
+<div class="wrapMainBlock">
+	<h2>Frondend to backend and back</h2>
+</div>
+<div class="wrapMainBlock">
 	<div id="accProjects">
 		<h3>default project</h3>
 		<div>
@@ -115,10 +128,13 @@
 				project template nr. 2
 				project template nr. 2
 		</div>
-		<button id='addProject'>new project</button>
+		<button id="addProject" title="please add new project">new project</button>
 	</div>
 
 </div>
 
+<div id="newProjectForm" title="Create new project">
+  <p>body dialog</p>
+</div>
 </body>
 </html>
