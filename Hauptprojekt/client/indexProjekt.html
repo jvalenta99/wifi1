@@ -11,19 +11,35 @@
 	<script src="jquery-ui-1.12.1.custom\jquery-ui.js"></script>
 	<script>
 
-
-
-
-
-
-
 	;(function() {
 		"use strict";
 		$( document ).ready( function() {
-			$('#addRequest').on('click', function(){
-
+			$('#addProject').on('click', function(){
+				console.log("new project");
 			});
-			$("#addRequest").button();
+			$("#accProjects").accordion({
+				heightStyle: "content"
+			});
+			$("#addProject").button();
+
+			var projectsArr=[];
+
+			var jsonRoot = {
+				rootObject: projectArr;
+			}
+
+			jsonRoot.rootObject[0]=new Project("project1","Das projekt macht nichts, aber um so mehr ordentlich");
+
+
+			console.log(jsonRoot.rootObject[0].name);
+			var Project=function (name,description){
+				this.name=name;
+				this.description=description;
+				//add call
+			}
+
+
+
 
 
 			var ahoj= {
@@ -70,12 +86,38 @@
 	}());
 	</script>
 	<style>
+	#wrapMain {
+		margin: 5%;
+		border-radius: 10px;
+		padding: 10px;
+		background: #F1F1F1;
+		border: 1px solid #F6F1E6;
+	}
+
+	#addProject {
+		margin: 20px 10px 0  0;
+	}
 
 	</style>
 </head>
 <body>
-<div class="wrapper">
-	<button id='addRequest'>add</button>
+<div id="wrapMain">
+	<div id="accProjects">
+		<h3>default project</h3>
+		<div>
+				project template nr. 1
+				project template nr. 1
+				project template nr. 1
+		</div>
+		<h3>default project2</h3>
+		<div>
+				project template nr. 2
+				project template nr. 2
+				project template nr. 2
+		</div>
+		<button id='addProject'>new project</button>
+	</div>
+
 </div>
 
 </body>
