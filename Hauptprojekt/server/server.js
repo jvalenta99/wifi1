@@ -1,14 +1,3 @@
-/*var x = require('./testmodul');
-var sum = x.testFunc(1,2);
-console.log( 'Die Summe', sum );*/
-
-/* Standard HTTP-Modul
-var http = require( 'http' );
-http.createServer( function( req, res ) {
-  res.write( 'Hallo Welt!' );
-  res.end();
-}).listen(54321);
-*/
 
 var express = require( 'express' );
 var app = express();
@@ -26,20 +15,21 @@ app.use( function(req, res, next) {
 });
 
 app.use( bp.urlencoded( {extended:true} ) ); // POST Daten geparst
+//app.use( bp.json({ type: 'application/*+json' }));
 app.use( express.static( 'inc' ) );
 
 
 app.post( '/getprojects', function( req, res) {
-  console.log( req.body );
+  console.log( req.body.dataObject );
   //fs.writeFile( 'projekte.json', JSON.stringify( { klicks: req.body}), function() {
-  fs.writeFile( 'projekte.json', JSON.stringify( req.body), function() {
-    console.log( 'klicks.json gespeichert.' );
-    res.end( req.body.anzahlklicks );
+  fs.writeFile( 'projekte.json', req.body.dataObject, function() {
+    console.log( 'projekte.json gespeichert.' );
+    res.end( req.body.dataObject);
   });
 });
 
 
-/*
+
 app.get( '/', function( req, res) {
   fs.readFile( 'index.html', function(err, data) {
     if ( !err ) {
@@ -48,7 +38,7 @@ app.get( '/', function( req, res) {
     }
   });
 });
-
+/*
 app.get( '/getsomething', function( req, res) {
     fs.readFile( 'klicks.json', function(err, data) {
       res.end( JSON.stringify(JSON.parse(data)) );

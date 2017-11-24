@@ -1,1 +1,8 @@
-{"klicks":"22"}
+{
+  "klicks":[
+    { name:"first"},
+    { name:"first"}
+
+
+  ]
+}

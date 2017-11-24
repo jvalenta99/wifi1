@@ -28,7 +28,7 @@
 	        duration: 1000
 	      },
 				buttons: {
-        "Create new project": function() {
+        CreateNewProject: function() {
           $( this ).dialog( "close" );
 					//create code!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
         },
@@ -67,8 +67,27 @@
 				var nextProject=jsonRoot.rootObject.length;
 				jsonRoot.rootObject[nextProject]=new Project("project2","Das projekt2 macht nichts, aber um so mehr ordentlich");
 				console.log(jsonRoot);
+				console.log("servus1");
+				console.log( {dataObject:JSON.stringify(jsonRoot)} );
+				$.ajax({
 
-				saveData(jsonRoot);
+					//url:'http://localhost:26893/getprojects',
+					url:'http://localhost:26893/getprojects',
+					method:'post',
+					dataType: 'json',
+					/*contentType:'application/json',*/
+					data:{dataObject:JSON.stringify(jsonRoot)},
+					/*data:JSON.stringify(jsonRoot),*/
+					success:function( data ){
+						console.log("servus2");
+						console.log("data back: " + data);
+						//return data;
+					}
+				}); //ajax
+
+
+
+				//saveData(jsonRoot);
 				$( "#newProjectForm" ).dialog( "open" );
 			});
 
@@ -78,6 +97,7 @@
 			    url:'http://localhost:26893/getprojects',
 			    method:'post',
 					datatype: 'json',
+					/*contentType:'json',*/
 			    data:obj,
 
 			    success:function( data ){
@@ -112,7 +132,7 @@
 </head>
 <body>
 <div class="wrapMainBlock">
-	<h2>Frondend to backend and back</h2>
+	<h2>Frontend to backend and back</h2>
 </div>
 <div class="wrapMainBlock">
 	<div id="accProjects">

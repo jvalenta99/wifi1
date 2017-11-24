@@ -46,7 +46,17 @@ app.get( '/getsomething', function(req, res) {
 
 })
 
+app.post( '/getprojects', function( req, res) {
+  console.log( req.body );
+  //fs.writeFile( 'projekte.json', JSON.stringify( { klicks: req.body}), function() {
+  fs.writeFile( 'projekte.json', JSON.stringify( req.body), function() {
+    console.log( 'projekte.json gespeichert.' );
+    res.end( req.body.rootObject);
+  });
+});
 
+
+/*
 app.post( '/getsomething', function(req, res) {
 
   console.log(req.body.anzahlKlicks);
@@ -55,3 +65,4 @@ app.post( '/getsomething', function(req, res) {
     res.end( req.body.anzahlKlicks );
   });
 })
+*/
