@@ -66,6 +66,27 @@
 				$( "#newProjectForm" ).dialog( "open" );
 			});
 
+			var newProject = function(){
+				console.log("newProject send");
+				$.ajax({
+
+					url:'http://localhost:26893/newProjectND',
+					method:'post',
+					dataType: 'json',
+					/*contentType:'application/json',*/
+					//data:{dataObject:JSON.stringify(jsonRoot)},
+					//
+					data:{dataObject:JSON.stringify(obj)},
+					/*data:JSON.stringify(jsonRoot),*/
+					success:function( data ){
+						console.log("data back");
+						console.log(data);
+						//return data;
+					}
+				}); //ajax //ajax
+
+			}
+
 			var readData = function(){
 				console.log("reading running");
 				$.ajax({

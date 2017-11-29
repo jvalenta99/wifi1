@@ -3,6 +3,10 @@ var express = require( 'express' );
 var app = express();
 var fs = require( 'fs' );
 var bp = require( 'body-parser' );
+var projetsArr=[];
+var root ={
+  projects:projetsArr
+};
 
 var server = app.listen( 26893, function() {
   console.log( 'Server läuft auf Port 26893.' );
@@ -41,8 +45,27 @@ app.post( '/projects', function( req, res) {
 app.post('/readprojects', function(req, res){
   console.log("reading projects");
 
-  fs.readFile( 'allprojects.json', function(err, data) {
+    fs.readFile( 'allprojects.json', function(err, data) {
       console.log(data);
       res.end(JSON.stringify(JSON.parse(data)) ) ;
     });
 });
+
+console.log("test11");
+var startProjectsArr = function (){
+  fs.writeFile( 'allprojects.json',JSON.stringify(root),function(){
+    console.log("file initialized L57");
+  })
+}
+// startProjectsArr();
+
+var getProjectsDataFromFile = function(){
+  fs.readFile( 'allprojects.json', function(err, data) {
+    console.log(data);
+    root = JSON.parse(data);
+    console.log(root);
+    console.log(root.projects[1]);
+  });
+}
+
+getProjectsDataFromFile();
