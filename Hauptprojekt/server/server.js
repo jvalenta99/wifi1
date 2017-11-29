@@ -18,53 +18,31 @@ app.use( bp.urlencoded( {extended:true} ) ); // POST Daten geparst
 //app.use( bp.json({ type: 'application/*+json' }));
 app.use( express.static( 'inc' ) );
 
-
-app.post( '/getprojects', function( req, res) {
-  console.log( req.body.dataObject );
-  //fs.writeFile( 'projekte.json', JSON.stringify( { klicks: req.body}), function() {
-  fs.writeFile( 'projekte.json', req.body.dataObject, function() {
-    console.log( 'projekte.json gespeichert.' );
-    res.end( req.body.dataObject);
-  });
-});
-
-
-
+//test connection html
 app.get( '/', function( req, res) {
   fs.readFile( 'index.html', function(err, data) {
     if ( !err ) {
       res.writeHead(200,{'Content-Type':'text/html'});
+      console.log("index.html abgefragt");
       res.end( data );
     }
   });
 });
-/*
-app.get( '/getsomething', function( req, res) {
-    fs.readFile( 'klicks.json', function(err, data) {
-      res.end( JSON.stringify(JSON.parse(data)) );
+
+app.post( '/projects', function( req, res) {
+  console.log( req.body.dataObject );
+  //fs.writeFile( 'projekte.json', JSON.stringify( { klicks: req.body}), function() {
+  fs.writeFile( 'allprojects.json', req.body.dataObject, function() {
+    console.log( 'allprojects.json gespeichert.' );
+      res.end( req.body.dataObject);
+  });
+});
+
+app.post('/readprojects', function(req, res){
+  console.log("reading projects");
+
+  fs.readFile( 'allprojects.json', function(err, data) {
+      console.log(data);
+      res.end(JSON.stringify(JSON.parse(data)) ) ;
     });
 });
-
-app.post( '/getsomething', function( req, res) {
-  console.log( req.body.anzahlklicks );
-  fs.writeFile( 'klicks.json', JSON.stringify( { klicks: req.body.anzahlklicks }), function() {
-    console.log( 'klicks.json gespeichert.' );
-    res.end( req.body.anzahlklicks );
-  });
-});
-
-
-app.get('/:datanode/:id', function( req, res ) {
-  res.end( req.params.datanode+' --- '+req.params.id );
-} )
-
-
-app.get( '/jquery-3.2.1.min.js', function( req, res) {
-  fs.readFile( 'jquery-3.2.1.min.js', function(err, data) {
-    if ( !err ) {
-      res.writeHead(200,{'Content-Type':'text/javascript'});
-      res.end( data );
-    }
-  });
-});
-*/
