@@ -11,6 +11,15 @@
 	;(function() {
 		"use strict";
 			$( document ).ready( function() {
+				var projectsArr=[];
+				var currentProject;
+				var Project=function (id,name,description){
+					this.id=id;
+					this.name=name;
+					this.description=description;
+					//add call
+				}
+
 
 //jQuery UI
 				$( "#newProjectForm" ).dialog({
@@ -46,36 +55,33 @@
 			$("#addProject").button();
 
 //Projects editing
-			var projectsArr=[];
 
-			var Project=function (id,name,description){
-				this.id=id;
-				this.name=name;
-				this.description=description;
-				//add call
-			}
 
-			var currentProject=new Project(3,"project1","Das projekt macht nichts, aber um so mehr ordentlich");
+
+
+			 currentProject=new Project(4,"project1","Das projekt macht nichts, aber um so mehr ordentlich");
 
 			$('#addProject').on('click', function(){
 				console.log("servus1");
 
-				saveData(currentProject);
-					readData();
+				//saveData(currentProject);
+					//readData();
+					newProject(currentProject);
 
 				$( "#newProjectForm" ).dialog( "open" );
 			});
-
-			var newProject = function(){
+			//save new project to server
+			var newProject = function(obj){
 				console.log("newProject send");
 				$.ajax({
 
 					url:'http://localhost:26893/newProjectND',
 					method:'post',
+					//response data:
 					dataType: 'json',
 					/*contentType:'application/json',*/
 					//data:{dataObject:JSON.stringify(jsonRoot)},
-					//
+					//sending data
 					data:{dataObject:JSON.stringify(obj)},
 					/*data:JSON.stringify(jsonRoot),*/
 					success:function( data ){
