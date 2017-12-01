@@ -50,14 +50,14 @@ app.post( '/newProjectND', function( req, res) {
 //----------------------------NEWPROJECTND END---------------------------
 
 //test reading file
-var getProjectsDataFromFile = function(){
+var getProjectsDataFromFile = function(cb){
   fs.readFile( "allprojects.json", function(err, data) {
     console.log("reading data");
     root = JSON.parse(data);
 
     console.log(root);
     console.log(root.projects[1]);
-    return root;
+    cb(root);
   });
 };
 
@@ -97,7 +97,9 @@ app.get( '/', function( req, res) {
 var saveToFile = function (){
   fs.writeFile( "allprojects.json",JSON.stringify(root),function(){
     console.log("Projects saved to file");
-    getProjectsDataFromFile();
+    getProjectsDataFromFile(function(root) {
+      console.log( root );
+    });
 
   })
 }
