@@ -27,16 +27,39 @@ app.use( bp.urlencoded( {extended:true} ) ); // POST Daten geparst
 //app.use( bp.json({ type: 'application/*+json' }));
 app.use( express.static( 'inc' ) );
 
-//add new project to projects
+//add new project to projects------------------------------------
 app.post( '/newProjectND', function( req, res) {
   console.log( req.body.dataObject );
   //get data from file to root object, add new project and save to file
   //var root2 = getProjectsDataFromFile (  );
-  console.log("opened file:");
+
+  fs.readFile( "allprojects.json", function(err, data) {
+    console.log("reading data");
+    root = JSON.parse(data);
+
+    console.log(root);
+    console.log(root.projects[1]);
+
+    });
+
+  console.log("opened file root2:");
   console.log(root2);
   //root.projects.push(root);
 
 });
+//----------------------------NEWPROJECTND END---------------------------
+
+//test reading file
+var getProjectsDataFromFile = function(){
+  fs.readFile( "allprojects.json", function(err, data) {
+    console.log("reading data");
+    root = JSON.parse(data);
+
+    console.log(root);
+    console.log(root.projects[1]);
+    return root;
+  });
+};
 
 
 
@@ -80,17 +103,7 @@ var saveToFile = function (){
 }
 //saveToFile();
 
-//test reading file
-var getProjectsDataFromFile = function(){
-  fs.readFile( "allprojects.json", function(err, data) {
-    console.log("reading data");
-    root = JSON.parse(data);
 
-    console.log(root);
-    console.log(root.projects[1]);
-    return root;
-  });
-};
 
 
 fs.writeFile( "allprojects.json",JSON.stringify(root),function(){
