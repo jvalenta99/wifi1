@@ -25,7 +25,7 @@ app.use( bp.urlencoded( {extended:true} ) ); // POST Daten geparst
 //app.use( bp.json({ type: 'application/*+json' }));
 app.use( express.static( 'inc' ) );
 
-<<<<<<< HEAD
+
 //add new project to ProjectsND
 app.post( '/projectsND', function( req, res) {
 
@@ -36,26 +36,7 @@ app.post( '/projectsND', function( req, res) {
     root.projects.push(JSON.parse(req.body.dataObject));
     res.end("New project has been saved.");
     console.log("root object after insert: ", root);
-=======
-//add new project to projects------------------------------------
-app.post( '/newProjectND', function( req, res) {
-  console.log( req.body.dataObject );
-  //get data from file to root object, add new project and save to file
-  //var root2 = getProjectsDataFromFile (  );
 
-  fs.readFile( "allprojects.json", function(err, data) {
-    console.log("reading data");
-    root = JSON.parse(data);
-
-    console.log(root);
-    console.log(root.projects[1]);
-
-    });
-
-  console.log("opened file root2:");
-  console.log(root2);
-  //root.projects.push(root);
->>>>>>> d51248b58a8cb1547a187b1f14fda39e263ca004
 
     //persist allprojects in root from to json file
     fs.writeFile( "allprojects.json",JSON.stringify(root),function(){

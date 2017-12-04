@@ -22,17 +22,19 @@
 
 
 //jQuery UI
+				$('input').addClass("ui-widget ui-widget-content ui-corner-all");
+				$('textarea').addClass("ui-widget ui-widget-content ui-corner-all");
 				$( "#newProjectForm" ).dialog({
 	      autoOpen: false,
 				resizable: false,
 				modal: true,
-				title: "Dialog title",
+				title: "Add new project",
 	      show: {
 	        effect: "blind",
 	        duration: 1000
 	      },
 	      hide: {
-	        effect: "explode",
+	        effect: "size",
 	        duration: 1000
 	      },
 				buttons: {
@@ -47,7 +49,12 @@
 		}); //end dialog
 
 			$(".wrapMainBlock").tooltip({
-	      track: true
+					show: {
+	        effect: "slideDown",
+	        delay: 250
+	      }
+
+
 	    });
 			$("#accProjects").accordion({
 				heightStyle: "content"
@@ -185,13 +192,15 @@
 				project template nr. 2
 				project template nr. 2
 		</div>
-		<button id="addProject" title="please add new project">new project</button>
+		<button id="addProject">new project</button>
 	</div>
 
 </div>
 
 <div id="newProjectForm" title="Create new project">
-  <p>body dialog</p>
+  <label for="projectName">Project's&nbsp;name: </label><input type="text id="projectName" maxlength="18"><br><br>
+  <label for="projectDetail">Project's&nbsp;detail: </label><textarea rows="4" cols="25" id="projectDetail"></textarea>
+
 </div>
 </body>
 </html>
