@@ -4,9 +4,7 @@ var app = express();
 var fs = require( 'fs' );
 var bp = require( 'body-parser' );
 var projetsArr=[];
-var root ={
-  projects:projetsArr
-};
+var root ={ projects:projetsArr }; //temp allprojects object in memory
 root.projects.push("1");
 root.projects.push("2");
 
@@ -27,19 +25,39 @@ app.use( bp.urlencoded( {extended:true} ) ); // POST Daten geparst
 //app.use( bp.json({ type: 'application/*+json' }));
 app.use( express.static( 'inc' ) );
 
-//add new project to projects
-app.post( '/newProjectND', function( req, res) {
-  console.log( req.body.dataObject );
-  //get data from file to root object, add new project and save to file
-  //var root2 = getProjectsDataFromFile (  );
-  console.log("opened file:");
-  console.log(root2);
-  //root.projects.push(root);
+//add new project to ProjectsND
+app.post( '/projectsND', function( req, res) {
 
+  console.log( "received data: ", req.body.dataObject );
+  fs.readFile( "allprojects.json", function(err, data) {
+    root={};
+    root = JSON.parse(data);
+    root.projects.push(JSON.parse(req.body.dataObject));
+    res.end("New project has been saved.");
+    console.log("root object after insert: ", root);
+
+    //persist allprojects in root from to json file
+    fs.writeFile( "allprojects.json",JSON.stringify(root),function(){
+      console.log("Projects saved to file");
+    });
+  });
 });
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+/*
 app.post( '/projects', function( req, res) {
   console.log( req.body.dataObject );
   //fs.writeFile( 'projekte.json', JSON.stringify( { klicks: req.body}), function() {
@@ -51,8 +69,8 @@ app.post( '/projects', function( req, res) {
 
 app.post('/readprojects', function(req, res){
   console.log("reading projects");
-
     fs.readFile( 'allprojects.json', function(err, data) {
+      console.log("read projects");
       console.log(data);
       res.end(JSON.stringify(JSON.parse(data)) ) ;
     });
@@ -88,7 +106,7 @@ var getProjectsDataFromFile = function(){
 
     console.log(root);
     console.log(root.projects[1]);
-    return root;
+    //return root;
   });
 };
 
@@ -98,3 +116,5 @@ fs.writeFile( "allprojects.json",JSON.stringify(root),function(){
   console.log("show file data");
   console.log( getProjectsDataFromFile() );
 })
+
+*/

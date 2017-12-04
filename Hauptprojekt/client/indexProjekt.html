@@ -59,26 +59,36 @@
 
 
 
-			 currentProject=new Project(4,"project1","Das projekt macht nichts, aber um so mehr ordentlich");
+			 currentProject=new Project(4,"project4","Das projekt macht nichts, aber um so mehr ordentlich");
 
 			$('#addProject').on('click', function(){
-				console.log("servus1");
 
-				//saveData(currentProject);
-					//readData();
-					newProject(currentProject);
-
+					$.ajax({
+						url:'http://localhost:26893/projectsND',
+						method:'post',
+						//answer data from server:
+						dataType: 'json',
+						//sending data
+						data:{dataObject:JSON.stringify(currentProject)},
+						/*data:JSON.stringify(jsonRoot),*/
+						success:function( data ){
+							console.log("newProject answer on client, data object:");
+							console.log(data);
+							//return data;
+						}
+					}); //ajax //ajax
 				$( "#newProjectForm" ).dialog( "open" );
 			});
+
 			//save new project to server
+
 			var newProject = function(obj){
 				console.log("newProject send");
 				$.ajax({
-
 					url:'http://localhost:26893/newProjectND',
 					method:'post',
 					//response data:
-					dataType: 'json',
+					//dataType: 'json',
 					/*contentType:'application/json',*/
 					//data:{dataObject:JSON.stringify(jsonRoot)},
 					//sending data
@@ -92,6 +102,7 @@
 				}); //ajax //ajax
 
 			}
+
 
 			var readData = function(){
 				console.log("reading running");
