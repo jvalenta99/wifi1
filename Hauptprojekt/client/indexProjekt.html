@@ -13,6 +13,9 @@
 			$( document ).ready( function() {
 				var projectsArr=[];
 				var currentProject;
+				var currentDialog;
+				var newProjectForm;
+
 				var Project=function (id,name,description){
 					this.id=id;
 					this.name=name;
@@ -20,137 +23,144 @@
 					//add call
 				}
 
-
 //jQuery UI
+				//$( '#projectName' ).css( 'color', 'red' );
+				//console.log("project name2: ", $("#projectName").val(''));
 				$('input').addClass("ui-widget ui-widget-content ui-corner-all");
-				$('textarea').addClass("ui-widget ui-widget-content ui-corner-all");
-				$( "#newProjectForm" ).dialog({
-	      autoOpen: false,
-				resizable: false,
-				modal: true,
-				title: "Add new project",
-	      show: {
-	        effect: "blind",
-	        duration: 1000
-	      },
-	      hide: {
-	        effect: "size",
-	        duration: 1000
-	      },
-				buttons: {
-        "Create project": function() {
-          $( this ).dialog( "close" );
-					//create code!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-        },
-        Cancel: function() {
-          $( this ).dialog( "close" );
-        }
-      }
-		}); //end dialog
+				$('textarea').addClass("ui-widget  ui-corner-all");
+				$('label').addClass("ui-widget ");
+
+//------------------CHOOSE PROJECT-----------------------------------
+		$('#chooseProject').selectmenu();
+
+//-------------------NEW PROJECT DIALOG-------------------------------
+newProjectForm=		$( "#newProjectForm" ).dialog({
+
+						autoOpen: false,
+						resizable: false,
+						modal: true,
+						title: "Add new project",
+			      show: {
+							create: function( event, ui ) {},
+			        effect: "blind",
+			        duration: 1000
+			      },
+			      hide: {
+			        effect: "size",
+			        duration: 1000
+			      },
+						buttons: {
+			        "Create project": function() {
+
+
+
+								currentDialog="#newProjectForm";
+								$( '#saveConfirm').dialog("open");
+			          //$( this ).dialog( "close" );
+								//create code!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+			        },
+			        Cancel: function() {
+								currentDialog="#newProjectForm";
+								$( '#cancelConfirm').dialog("open");
+
+					    }
+			      }, //end of buttons
+
+				}); //end new project dialog
+//-------------------CANCEL CONFIRM DIALOG-------------------------------
+	$( "#cancelConfirm" ).dialog({
+			      autoOpen: false,
+						resizable: false,
+						modal: true,
+						title: "Cancel confirmation",
+			      show: {
+			        effect: "blind",
+			        duration: 1000
+			      },
+			      hide: {
+			        effect: "size",
+			        duration: 1000
+			      },
+						buttons: {
+			        "Yes": function() {
+								$(currentDialog).dialog("close" );
+			          $( this ).dialog( "close" );
+								//create code cancel without saving!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+			        },
+			        "No": function() {
+								$( this ).dialog( "close" );
+					    }
+			      } //end of buttons
+				}); //end new project dialog
+
+				$( "#saveConfirm" ).dialog({
+			      autoOpen: false,
+						resizable: false,
+						modal: true,
+						title: "Confirm saving",
+			      show: {
+			        effect: "blind",
+			        duration: 1000
+			      },
+			      hide: {
+			        effect: "size",
+			        duration: 1000
+			      },
+						buttons: {
+			        "Yes": function() {
+								switch (currentDialog) {
+									case "#newProjectForm":
+										var newProjectObject = new Project(7,$('#projectName').val(),$('#projectDetail').val());
+											$.ajax({
+											url:'http://localhost:26893/projectsND',
+											method:'post',
+											//answer data from server:
+											dataType: 'json',
+											//sending data
+											data:{dataObject:JSON.stringify(newProjectObject)},
+											/*data:JSON.stringify(jsonRoot),*/
+											success:function( data ){
+												console.log("saveNewproject");
+												console.log(data);
+												//return data;
+											}
+										}); //ajax
+
+								} //switch end of
+								$(currentDialog).dialog("close" );
+			          $( this ).dialog( "close" );
+								//create code cancel without saving!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+			        },
+			        "No": function() {
+								$( this ).dialog( "close" );
+					    }
+			      } //end of buttons
+				}); //end new project dialog
 
 			$(".wrapMainBlock").tooltip({
 					show: {
 	        effect: "slideDown",
 	        delay: 250
 	      }
-
-
 	    });
 			$("#accProjects").accordion({
 				heightStyle: "content"
 			});
-			$("#addProject").button();
+			//$("#addProject").button();
 
 //Projects editing
 
+			 currentProject=new Project(6,"project7","Das projekt macht nichts, aber um so mehr ordentlich");
+
+			$('#addProjectBtn').button().on('click', function(){
+				$("#projectName").val('');
+				$("#projectDetail").val('');
+				console.log("felder in form initialisiert");
 
 
-
-			 currentProject=new Project(4,"project4","Das projekt macht nichts, aber um so mehr ordentlich");
-
-			$('#addProject').on('click', function(){
-
-					$.ajax({
-						url:'http://localhost:26893/projectsND',
-						method:'post',
-						//answer data from server:
-						dataType: 'json',
-						//sending data
-						data:{dataObject:JSON.stringify(currentProject)},
-						/*data:JSON.stringify(jsonRoot),*/
-						success:function( data ){
-							console.log("newProject answer on client, data object:");
-							console.log(data);
-							//return data;
-						}
-					}); //ajax //ajax
 				$( "#newProjectForm" ).dialog( "open" );
 			});
 
-			//save new project to server
-
-			var newProject = function(obj){
-				console.log("newProject send");
-				$.ajax({
-					url:'http://localhost:26893/newProjectND',
-					method:'post',
-					//response data:
-					//dataType: 'json',
-					/*contentType:'application/json',*/
-					//data:{dataObject:JSON.stringify(jsonRoot)},
-					//sending data
-					data:{dataObject:JSON.stringify(obj)},
-					/*data:JSON.stringify(jsonRoot),*/
-					success:function( data ){
-						console.log("data back");
-						console.log(data);
-						//return data;
-					}
-				}); //ajax //ajax
-
-			}
-
-
-			var readData = function(){
-				console.log("reading running");
-				$.ajax({
-					//url:'http://localhost:26893/getprojects',
-					url:'http://localhost:26893/readprojects',
-					method:'post',
-					//dataType: 'json',
-					/*contentType:'application/json',*/
-					//data:{dataObject:JSON.stringify(jsonRoot)},
-					//data:{dataObject:JSON.stringify(obj)},
-					/*data:JSON.stringify(jsonRoot),*/
-					success:function( data ){
-						console.log("data read back");
-						console.log(data);
-						console.log(JSON.parse(data).id);
-						console.log(JSON.parse(data));
-
-						//return data;
-					}
-				}); //ajax //ajax
-			} //saveData
-
-
-			var saveData = function(obj){
-				$.ajax({
-					//url:'http://localhost:26893/getprojects',
-					url:'http://localhost:26893/projects',
-					method:'post',
-					dataType: 'json',
-					/*contentType:'application/json',*/
-					//data:{dataObject:JSON.stringify(jsonRoot)},
-					data:{dataObject:JSON.stringify(obj)},
-					/*data:JSON.stringify(jsonRoot),*/
-					success:function( data ){
-						console.log("data back");
-						console.log(data);
-						//return data;
-					}
-				}); //ajax //ajax
-			} //saveData
 		}) //document ready
 	}()); //outer-function
 	</script>
@@ -168,39 +178,67 @@
 		border: 1px solid #F6F1E6;
 	}
 
-	#addProject {
+	#addProjectBtn {
 		margin: 20px 10px 0  0;
 	}
+
+	label {
+      display: block;
+      margin:  0  0 15px 0;
+    }
 
 	</style>
 </head>
 <body>
 <div class="wrapMainBlock">
-	<h2>Frontend to backend and back</h2>
+	<h2>API DOC</h2>
 </div>
-<div class="wrapMainBlock">
-	<div id="accProjects">
-		<h3>default project</h3>
-		<div>
-				project template nr. 1
-				project template nr. 1
-				project template nr. 1
-		</div>
-		<h3>default project2</h3>
-		<div>
-				project template nr. 2
-				project template nr. 2
-				project template nr. 2
-		</div>
-		<button id="addProject">new project</button>
-	</div>
 
+
+
+<div class="wrapMainBlock">
+	<label for="chooseProject">Select a project: </label>
+    <select name="chooseProject" id="chooseProject">
+      <option>Slower</option>
+      <option>Slow</option>
+      <option selected="selected">Medium</option>
+      <option>Fast</option>
+      <option>Faster</option>
+    </select>
+
+
+	<br><button id="addProjectBtn">new project</button>
+</div>
+
+<div class="wrapMainBlock">
+
+
+		<div id="accProjects">
+			<h3>default project</h3>
+			<div>
+					project template nr. 1
+					project template nr. 1
+					project template nr. 1
+			</div>
+			<h3>default project2</h3>
+			<div>
+					project template nr. 2
+					project template nr. 2
+					project template nr. 2
+			</div>
+
+		</div>
 </div>
 
 <div id="newProjectForm" title="Create new project">
-  <label for="projectName">Project's&nbsp;name: </label><input type="text id="projectName" maxlength="18"><br><br>
-  <label for="projectDetail">Project's&nbsp;detail: </label><textarea rows="4" cols="25" id="projectDetail"></textarea>
-
+  <label for="projectName">Name: </label><input type="text" id="projectName" maxlength="18" autocomplete="off" value="">
+  <label for="projectDetail">Detail: </label><textarea rows="4" cols="25" id="projectDetail" autocomplete="off" value=""></textarea>
+</div>
+<div id="cancelConfirm" >
+	<p>Close dialog without saving?</p>
+</div>
+<div id="saveConfirm" >
+	<p>Are you sure you want to save?</p>
 </div>
 </body>
 </html>
