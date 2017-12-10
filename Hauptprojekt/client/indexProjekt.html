@@ -16,8 +16,8 @@
 				var currentDialog;
 				var newProjectForm;
 
-				var Project=function (id,name,description){
-					this.id=id;
+//---------------------CLASS PROJECT----------------------
+				var Project=function (name,description){
 					this.name=name;
 					this.description=description;
 					//add call
@@ -30,8 +30,51 @@
 				$('textarea').addClass("ui-widget  ui-corner-all");
 				$('label').addClass("ui-widget ");
 
+
 //------------------CHOOSE PROJECT-----------------------------------
-		$('#chooseProject').selectmenu();
+		$('#chooseProject').selectmenu({
+      change: function( event, data ) {
+
+				console.log("combobox value project id: ", data.item.value);
+				/*
+				circle.css({
+          width: data.item.value,
+          height: data.item.value
+        });
+				*/
+      }
+		}).selectmenu( "menuWidget" )
+    .addClass( "overflow" ); //select menu
+
+		//update project list from server:
+var updateProjetList = function (){
+	console.log("updateprojectlist program läuft");
+	$.ajax({
+	url:'http://localhost:26893/projectsND',
+	method:'get',
+	//answer data from server:
+	dataType: 'json',
+	success:function( data ){
+			//console.log(data.projects);
+			for (var i=0;i<data.projects.length;i++){
+
+				console.log(data.projects[i].name);
+				$('<option>')
+				.html(data.projects[i].name)
+				.attr("value",data.projects[i].id)
+				.attr("title",data.projects[i].description)
+				.appendTo('#chooseProject');
+
+			}
+
+
+	}
+}); //ajax
+
+}
+
+updateProjetList();
+console.log("main program läuft");
 
 //-------------------NEW PROJECT DIALOG-------------------------------
 newProjectForm=		$( "#newProjectForm" ).dialog({
@@ -110,7 +153,7 @@ newProjectForm=		$( "#newProjectForm" ).dialog({
 			        "Yes": function() {
 								switch (currentDialog) {
 									case "#newProjectForm":
-										var newProjectObject = new Project(7,$('#projectName').val(),$('#projectDetail').val());
+										var newProjectObject = new Project($('#projectName').val(),$('#projectDetail').val());
 											$.ajax({
 											url:'http://localhost:26893/projectsND',
 											method:'post',
@@ -137,7 +180,7 @@ newProjectForm=		$( "#newProjectForm" ).dialog({
 			      } //end of buttons
 				}); //end new project dialog
 
-			$(".wrapMainBlock").tooltip({
+			$(document).tooltip({
 					show: {
 	        effect: "slideDown",
 	        delay: 250
@@ -148,9 +191,9 @@ newProjectForm=		$( "#newProjectForm" ).dialog({
 			});
 			//$("#addProject").button();
 
-//Projects editing
+//------------------open newProjectForm----------------------------------------
 
-			 currentProject=new Project(6,"project7","Das projekt macht nichts, aber um so mehr ordentlich");
+			 //currentProject=new Project(6,"project7","Das projekt macht nichts, aber um so mehr ordentlich");
 
 			$('#addProjectBtn').button().on('click', function(){
 				$("#projectName").val('');
@@ -186,6 +229,7 @@ newProjectForm=		$( "#newProjectForm" ).dialog({
       display: block;
       margin:  0  0 15px 0;
     }
+	  .overflow { height: 200px; }
 
 	</style>
 </head>
@@ -199,11 +243,8 @@ newProjectForm=		$( "#newProjectForm" ).dialog({
 <div class="wrapMainBlock">
 	<label for="chooseProject">Select a project: </label>
     <select name="chooseProject" id="chooseProject">
-      <option>Slower</option>
-      <option>Slow</option>
-      <option selected="selected">Medium</option>
-      <option>Fast</option>
-      <option>Faster</option>
+
+
     </select>
 
 
