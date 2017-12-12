@@ -19,7 +19,7 @@ var server = app.listen( 26893, function() {
 
 app.use( function(req, res, next) {
   res.setHeader( 'Access-Control-Allow-Origin', '*' );
-  res.setHeader( 'Access-Control-Allow-Methods', 'GET, POST' );
+  res.setHeader( 'Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE' );
   next();
 });
 
@@ -72,6 +72,29 @@ app.get('/projectsND', function( req, res){
     }); //read file
 
 
+});
+
+app.delete('/projectsND/:id', function(req, res) {
+    console.log("delete activated")
+    var id = req.params.id;
+    console.log("id to delete: " + id);
+
+
+    fs.readFile( "allprojects.json", function(err, data) {
+      var root={};
+      root = JSON.parse(data);
+      root.projects.splice(id,1);
+      console.log("root object after insert: ", root);
+
+
+      //persist allprojects in root from to json file
+      fs.writeFile( "allprojects.json",JSON.stringify(root),function(){
+        res.json({deleted: 'yes'});
+        res.end;
+        console.log("Project deleted");
+      }); //write file
+    }); //readFile
+    //res.send('Successfully deleted product!');
 });
 
 //test reading file
