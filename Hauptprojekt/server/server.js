@@ -3,10 +3,10 @@ var express = require( 'express' );
 var app = express();
 var fs = require( 'fs' );
 var bp = require( 'body-parser' );
-//var projetsArr=[];
+//var projectsArr=[];
 
 /*
-var root ={ projects:projetsArr }; //temp allprojects object in memory
+var root ={ projects:projectsArr }; //temp allprojects object in memory
 root.projects.push("1");
 root.projects.push("2");
 */
@@ -36,7 +36,8 @@ app.post( '/projectsND', function( req, res) {
     var root={};
     root = JSON.parse(data);
     root.projects.push(JSON.parse(req.body.dataObject));
-    res.end("New project has been saved.");
+    res.json({projectcreated: 'yes'});
+    res.end();
     console.log("root object after insert: ", root);
 
 
@@ -52,8 +53,8 @@ app.get('/projectsND', function( req, res){
   fs.readFile( 'allprojects.json', function(err, data) {
       //create object with id, name detail and put to response
       var root={};
-      var projetsArr=[];
-      var out={ projects:projetsArr };
+      var projectsArr=[];
+      var out={ projects:projectsArr };
 
       root = JSON.parse(data);
       console.log("dataparsed: ",JSON.parse(data));
@@ -67,15 +68,69 @@ app.get('/projectsND', function( req, res){
       }
       console.log("outobject: ", out);
 
-
-      res.end( JSON.stringify(out) );
+      //res.json({out: JSON.stringify(out)});
+      res.send( JSON.stringify(out) );
+      res.end();
     }); //read file
 
 
 });
 
+
+//----------------------------get one project (with id parameter)---------------------------
+app.get('/projectsND/:id', function( req, res){
+  var id = req.params.id;
+  fs.readFile( 'allprojects.json', function(err, data) {
+      //create object with id, name detail and put to response
+      var root={};
+      var out={};
+
+      root = JSON.parse(data);
+      console.log("dataparsed: ",JSON.parse(data));
+
+        if(root.projects[id].name){
+        out=root.projects[id];
+        }//out.projects[0]={id:7};
+        //out.projects[i].name=root.projects[i].name;
+        //out.projects[i].description=root.projects[i].description;
+
+      console.log("outobject: ", out);
+
+      //res.json({out: JSON.stringify(out)});
+      res.send( JSON.stringify(out) );
+      res.end();
+    }); //read file
+});
+
+//----------------------------update (overvrite) one project (with id parameter)---------------------------
+
+app.put('/projectsND/:id', function(req, res) {
+    console.log("update activated");
+    var id = req.params.id;
+    console.log("id to update: " + id);
+
+
+    fs.readFile( "allprojects.json", function(err, data) {
+      var root={};
+      root = JSON.parse(data);
+      root.projects[id]=JSON.parse(JSON.stringify(data))
+      console.log("root object after insert: ", root);
+
+
+      //persist allprojects in root from to json file
+      fs.writeFile( "allprojects.json",JSON.stringify(root),function(){
+        res.json({updated: 'yes'});
+        res.end();
+        console.log("Project updated");
+      }); //write file
+    }); //readFile
+    //res.send('Successfully deleted product!');
+});
+
+
+//----------------------------delete one project (with id parameter)---------------------------
 app.delete('/projectsND/:id', function(req, res) {
-    console.log("delete activated")
+    console.log("delete activated");
     var id = req.params.id;
     console.log("id to delete: " + id);
 
@@ -90,7 +145,7 @@ app.delete('/projectsND/:id', function(req, res) {
       //persist allprojects in root from to json file
       fs.writeFile( "allprojects.json",JSON.stringify(root),function(){
         res.json({deleted: 'yes'});
-        res.end;
+        res.end();
         console.log("Project deleted");
       }); //write file
     }); //readFile
@@ -115,8 +170,8 @@ var getProjectsDataFromFile = function(cb){
 fs.readFile( 'allprojects.json', function(err, data) {
     //create object with id, name detail and put to response
     var root={};
-    var projetsArr=[];
-    var out={ projects:projetsArr };
+    var projectsArr=[];
+    var out={ projects:projectsArr };
 
     root = JSON.parse(data);
 

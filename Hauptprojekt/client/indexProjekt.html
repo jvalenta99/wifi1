@@ -13,6 +13,7 @@
 			$( document ).ready( function() {
 				var projectsArr=[];
 				var currentProject=-1;  //id
+				var currentProjectObject;
 				var currentDialog;
 				var newProjectForm;
 				var currentConnection;
@@ -22,6 +23,11 @@
 					this.name=name;
 					this.description=description;
 					this.connections=[];
+					this.connections[0]={};
+					this.connections[0].connectionName="Connection 1";
+					this.connections[0].connectionURL="http://yourserverpath";
+					this.connections[0].request={parameter1:"dataParameter1",parameter2:"dataParameter2"}
+
 					//add call
 				}
 
@@ -34,41 +40,100 @@
 
 
 //------------------CHOOSE PROJECT-----------------------------------
-var updateProjetList = function (){
-		$('#chooseProject').selectmenu({
-      change: function( event, data ) {
+var updateProjectList = function (){
+		console.log("update project list run");
+		$.ajax({
+			url:'http://localhost:26893/projectsND',
+			method:'get',
+			//answer data from server:
+			dataType: 'json',
+			success:function( data ){
+					console.log("update project list ajax back", data);
+					//console.log(data.projects);
+					$('#chooseProject option').remove();
+					for (var i=0;i<data.projects.length;i++){
 
-				console.log("combobox value project id: ", data.item.value);
-				currentProject=data.item.value;
+						//console.log(data.projects[i].name);
+
+						$('<option>')
+						.html(data.projects[i].name)
+						.attr("value",data.projects[i].id)
+						.attr("title",data.projects[i].description)
+						.appendTo('#chooseProject');
+					}
+
+					$('#chooseProject').selectmenu({
+						change: function( event, data ) {
+							//console.log("combobox value project id: ", data.item.value);
+							currentProject=data.item.value;
+							console.log( "current project changed to :", currentProject );
+							//receive currentProjectObject
+							$.ajax({
+								url:'http://localhost:26893/projectsND/'+currentProject,
+								method:'get',
+								//answer data from server:
+								dataType: 'json',
+								//sending data
+								success:function( data ){
+
+									currentProjectObject=JSON.parse(JSON.stringify(data));
+									console.log("current project object: ", currentProjectObject );
+									showProjectDetail();
+									//return data;
+								}
+							}); //ajax
+						}  //change
+					});  //$('#chooseProject').selectmenu({
+					$('#chooseProject').selectmenu( "refresh" );
+					console.log("choose project refreshed");
+					$('#chooseProject').selectmenu( "menuWidget" )
+					.addClass( "overflow" ); //select menu
+
+			} //success
+		}); //ajax
+
+		//update project list from server:
+
+
+} //update project list
+
+updateProjectList();
+console.log("main program läuft");
+
+//--------------------choose connection-----------------------------
+
+var showProjectDetail = function (){
+		console.log("show project detail läuft");
+		$('#chooseConnection option').remove();
+		console.log("currentProjectObject", currentProjectObject);
+		for (var i=0;i<currentProjectObject.connections.length;i++){
+
+			//console.log(data.projects[i].name);
+
+			$('<option>')
+			.html(currentProjectObject.connections[i].connectionName)
+			.attr("value",i)
+			.attr("title",currentProjectObject.connections[i].connectionDetail)
+			.appendTo('#chooseConnection');
+		} //for
+
+
+
+		$('#chooseConnection').selectmenu({
+      change: function( event, data ) {
+				currentConnection=data.item.value;
       }
 		}).selectmenu( "menuWidget" )
     .addClass( "overflow" ); //select menu
 
-		//update project list from server:
+		$('#chooseConnection').selectmenu( "refresh" );
+		console.log("choose connection refreshed");
+		$('#chooseConnection').selectmenu( "menuWidget" )
+		.addClass( "overflow" ); //select menu
+} //show project detail
 
-	console.log("updateprojectlist program läuft");
-	$.ajax({
-	url:'http://localhost:26893/projectsND',
-	method:'get',
-	//answer data from server:
-	dataType: 'json',
-	success:function( data ){
-			//console.log(data.projects);
-			for (var i=0;i<data.projects.length;i++){
+//showProjectDetail();
 
-				console.log(data.projects[i].name);
-				$('<option>')
-				.html(data.projects[i].name)
-				.attr("value",data.projects[i].id)
-				.attr("title",data.projects[i].description)
-				.appendTo('#chooseProject');
-			}
-	}
-}); //ajax
-} //update project list
-
-updateProjetList();
-console.log("main program läuft");
 
 //-------------------NEW PROJECT DIALOG-------------------------------
 newProjectForm=		$( "#newProjectForm" ).dialog({
@@ -159,13 +224,34 @@ newProjectForm=		$( "#newProjectForm" ).dialog({
 												console.log("saveNewproject");
 												console.log(data);
 												//return data;
+
 											}
 										}); //ajax
+
+
+										case "#saveProjectBtn":
+											$.ajax({
+												url:'http://localhost:26893/projectsND/'+currentProject,
+												method:'put',
+												//answer data from server:
+												dataType:'json',
+												//sending data
+												data:{dataObject:JSON.stringify(currentProjectObject
+												)},
+												/*data:JSON.stringify(jsonRoot),*/
+												success:function( data ){
+
+													console.log("Saved project data: ",data);
+													//return data;
+												}
+											}); //ajax
+
+
 
 								} //switch end of
 								$(currentDialog).dialog("close" );
 			          $( this ).dialog( "close" );
-								updateProjetList();
+								updateProjectList();
 
 			        },
 			        "No": function() {
@@ -204,8 +290,8 @@ $( "#deleteConfirm" ).dialog({
 							//data:{dataObject:JSON.stringify(newProjectObject)},
 							/*data:JSON.stringify(jsonRoot),*/
 							success:function( data ){
-								$('#chooseProject').selectmenu(' refresh ');
-								updateProjetList();
+								//$('#chooseProject').selectmenu(' refresh ');
+								updateProjectList();
 								console.log("dataDeleted message:");
 								console.log(data);
 								//return data;
@@ -215,7 +301,7 @@ $( "#deleteConfirm" ).dialog({
 				} //switch end of
 				//$(currentDialog).dialog("close" );
 				$( this ).dialog( "close" );
-				updateProjetList();
+				updateProjectList();
 				//create code cancel without saving!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 			},
 			"No": function() {
@@ -233,7 +319,8 @@ $( "#deleteConfirm" ).dialog({
 	        delay: 250
 	      }
 	    });
-			$("#activeProjectAccordion").accordion({
+
+			$("#connectionAccordion").accordion({
 				heightStyle: "content"
 			});
 			//$("#addProject").button();
@@ -245,7 +332,6 @@ $( "#deleteConfirm" ).dialog({
 			$('#addProjectBtn').button().on('click', function(){
 				$("#projectName").val('');
 				$("#projectDetail").val('');
-				console.log("felder in form initialisiert");
 				$( "#newProjectForm" ).dialog( "open" );
 			}); //add project button
 
@@ -253,11 +339,13 @@ $( "#deleteConfirm" ).dialog({
 				console.log("current project: ",currentProject);
 				currentDialog="#deleteProjectBtn";
 				$( "#deleteConfirm" ).dialog( "open" );
-
-
 				console.log("delete button clicked");
-
 			});
+
+			$('#saveProjectBtn').button().on('click', function(){
+				currentDialog="#saveProjectBtn";
+				$( "#saveConfirm" ).dialog( "open" );
+			}); //add project button
 		}) //document ready
 	}()); //outer-function
 	</script>
@@ -300,6 +388,7 @@ $( "#deleteConfirm" ).dialog({
     </select>
 	<button id="addProjectBtn">new</button>
 	<button id="deleteProjectBtn">delete</button>
+	<button id="saveProjectBtn">save</button>
 </div>
 
 <div class="wrapMainBlock" id="connectionWrap">
@@ -308,24 +397,25 @@ $( "#deleteConfirm" ).dialog({
     </select>
 	<button id="addConnectionBtn">new</button>
 	<button id="deleteConnectionBtn">delete</button>
+	<div id="connectionAccordion">
+		<h3>Request</h3>
+		<div>
+				project template nr. 1
+				project template nr. 1
+				project template nr. 1
+		</div>
+		<h3>Response</h3>
+		<div>
+				project template nr. 2
+				project template nr. 2
+				project template nr. 2
+		</div>
+
+	</div>
 </div>
 
 <div class="wrapActiveProject">
-		<div id="activeProjectAccordion">
-			<h3>Request</h3>
-			<div>
-					project template nr. 1
-					project template nr. 1
-					project template nr. 1
-			</div>
-			<h3>Response</h3>
-			<div>
-					project template nr. 2
-					project template nr. 2
-					project template nr. 2
-			</div>
 
-		</div>
 </div>
 
 <div id="newProjectForm" title="Create new project">
