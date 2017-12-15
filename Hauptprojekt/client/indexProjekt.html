@@ -224,7 +224,7 @@ newProjectForm=		$( "#newProjectForm" ).dialog({
 												console.log("saveNewproject");
 												console.log(data);
 												//return data;
-
+												$(currentDialog).dialog("close" );
 											}
 										}); //ajax
 
@@ -249,7 +249,7 @@ newProjectForm=		$( "#newProjectForm" ).dialog({
 
 
 								} //switch end of
-								$(currentDialog).dialog("close" );
+								//$(currentDialog).dialog("close" );
 			          $( this ).dialog( "close" );
 								updateProjectList();
 
