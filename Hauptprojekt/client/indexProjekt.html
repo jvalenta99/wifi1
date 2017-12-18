@@ -12,10 +12,12 @@
 		"use strict";
 			$( document ).ready( function() {
 				var projectsArr=[];
-				var currentProject=-1;  //id
+				var projectList;
+				var currentProject=0;  //id
 				var currentProjectObject;
 				var currentDialog;
 				var newProjectForm;
+				var newConnectionForm;
 				var currentConnection;
 
 //---------------------CLASS PROJECT----------------------
@@ -41,13 +43,14 @@
 
 //------------------CHOOSE PROJECT-----------------------------------
 var updateProjectList = function (){
-		console.log("update project list run");
+		console.log( "update project list run" );
 		$.ajax({
 			url:'http://localhost:26893/projectsND',
 			method:'get',
 			//answer data from server:
 			dataType: 'json',
 			success:function( data ){
+					//set combo on start
 					console.log("update project list ajax back", data);
 					//console.log(data.projects);
 					$('#chooseProject option').remove();
@@ -61,6 +64,24 @@ var updateProjectList = function (){
 						.attr("title",data.projects[i].description)
 						.appendTo('#chooseProject');
 					}
+
+					//first time initialize current Project
+					$.ajax({
+						url:'http://localhost:26893/projectsND/0',
+						method:'get',
+						//answer data from server:
+						dataType: 'json',
+						//sending data
+						success:function( data ){
+
+							currentProjectObject=JSON.parse(JSON.stringify(data));
+							console.log("current project object: ", currentProjectObject );
+							showProjectDetail();
+							//return data;
+						}
+					}); //ajax
+
+
 
 					$('#chooseProject').selectmenu({
 						change: function( event, data ) {
@@ -100,6 +121,30 @@ var updateProjectList = function (){
 updateProjectList();
 console.log("main program läuft");
 
+//----------------------save current project object to server--------------
+
+var saveCurrentProjectToServer = function () {
+
+	$.ajax({
+		url:'http://localhost:26893/projectsND/'+currentProject,
+		method:'put',
+		//answer data from server:
+		dataType: 'json',
+		//send current object
+		data:JSON.stringify(currentProjectObject),
+		//sending data
+		success:function( data ){
+
+			currentProjectObject=JSON.parse(JSON.stringify(data));
+			console.log("current project object: ", currentProjectObject );
+			showProjectDetail();
+			//return data;
+		}
+	}); //
+
+}
+
+
 //--------------------choose connection-----------------------------
 
 var showProjectDetail = function (){
@@ -107,17 +152,12 @@ var showProjectDetail = function (){
 		$('#chooseConnection option').remove();
 		console.log("currentProjectObject", currentProjectObject);
 		for (var i=0;i<currentProjectObject.connections.length;i++){
-
-			//console.log(data.projects[i].name);
-
 			$('<option>')
 			.html(currentProjectObject.connections[i].connectionName)
 			.attr("value",i)
 			.attr("title",currentProjectObject.connections[i].connectionDetail)
 			.appendTo('#chooseConnection');
 		} //for
-
-
 
 		$('#chooseConnection').selectmenu({
       change: function( event, data ) {
@@ -128,8 +168,7 @@ var showProjectDetail = function (){
 
 		$('#chooseConnection').selectmenu( "refresh" );
 		console.log("choose connection refreshed");
-		$('#chooseConnection').selectmenu( "menuWidget" )
-		.addClass( "overflow" ); //select menu
+
 } //show project detail
 
 //showProjectDetail();
@@ -153,9 +192,29 @@ newProjectForm=		$( "#newProjectForm" ).dialog({
 			      },
 						buttons: {
 			        "Create project": function() {
-
+								var newProjectObject = new Project($('#projectName').val(),$('#projectDetail').val());
+								$.ajax({
+								url:'http://localhost:26893/projectsND',
+								method:'post',
+								//answer data from server:
+								dataType: 'json',
+								//sending data
+								data:{dataObject:JSON.stringify(newProjectObject)},
+								/*data:JSON.stringify(jsonRoot),*/
+								success:function( data ){
+									console.log("saveNewproject");
+									console.log(data);
+									//return data;
+									$(currentDialog).dialog("close" );
+								}
+							}); //ajax
+							console.log("bevore close");
+							 $( this ).dialog( "close" );
+							 updateProjectList();
+								/*
 								currentDialog="#newProjectForm";
 								$( '#saveConfirm').dialog("open");
+								*/
 			          //$( this ).dialog( "close" );
 								//create code!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 			        },
@@ -193,72 +252,8 @@ newProjectForm=		$( "#newProjectForm" ).dialog({
 			      } //end of buttons
 				}); //end new project dialog
 
-//-----------------------save confirm--------------------------------------------------
-				$( "#saveConfirm" ).dialog({
-			      autoOpen: false,
-						resizable: false,
-						modal: true,
-						title: "Confirm saving",
-			      show: {
-			        effect: "blind",
-			        duration: 1000
-			      },
-			      hide: {
-			        effect: "size",
-			        duration: 1000
-			      },
-						buttons: {
-			        "Yes": function() {
-								switch (currentDialog) {
-									case "#newProjectForm":
-										var newProjectObject = new Project($('#projectName').val(),$('#projectDetail').val());
-											$.ajax({
-											url:'http://localhost:26893/projectsND',
-											method:'post',
-											//answer data from server:
-											dataType: 'json',
-											//sending data
-											data:{dataObject:JSON.stringify(newProjectObject)},
-											/*data:JSON.stringify(jsonRoot),*/
-											success:function( data ){
-												console.log("saveNewproject");
-												console.log(data);
-												//return data;
-												$(currentDialog).dialog("close" );
-											}
-										}); //ajax
 
 
-										case "#saveProjectBtn":
-											$.ajax({
-												url:'http://localhost:26893/projectsND/'+currentProject,
-												method:'put',
-												//answer data from server:
-												dataType:'json',
-												//sending data
-												data:{dataObject:JSON.stringify(currentProjectObject
-												)},
-												/*data:JSON.stringify(jsonRoot),*/
-												success:function( data ){
-
-													console.log("Saved project data: ",data);
-													//return data;
-												}
-											}); //ajax
-
-
-
-								} //switch end of
-								//$(currentDialog).dialog("close" );
-			          $( this ).dialog( "close" );
-								updateProjectList();
-
-			        },
-			        "No": function() {
-								$( this ).dialog( "close" );
-					    }
-			      } //end of buttons
-				}); //end new project dialog
 //----------------------------delete confirmation---------------------------------
 
 $( "#deleteConfirm" ).dialog({
@@ -313,6 +308,64 @@ $( "#deleteConfirm" ).dialog({
 
 //xxxxxxxxxxxxxxxxxxxxxxxxxxxxxx   end delete confirm   xxxxxxxxxxxxxxxxxxxxxxxxxxxx
 
+//------------------Edit PROJECT DIALOG-------------------------------
+editProjectForm=		$( "#editProjectForm" ).dialog({
+						open: function( event, ui ) {
+							console.log("current project Object name: ",currentProjectObject.name);
+							console.log("current project Object description: ",currentProjectObject.description);
+
+							$('#editProjectName').val(currentProjectObject.name);
+							$('#editProjectDetail').val(currentProjectObject.description);
+						},
+
+						autoOpen: false,
+						resizable: false,
+						modal: true,
+						title: "Add edit project",
+			      show: {
+							create: function( event, ui ) {
+
+							},
+			        effect: "blind",
+			        duration: 1000
+			      },
+			      hide: {
+			        effect: "size",
+			        duration: 1000
+			      },
+						buttons: {
+			        "Save changes": function() {
+										//var editProjectObject = new Project($('#projectName').val(),$('#projectDetail').val());
+										currentProjectObject.name = $('#editProjectName').val();
+										console.log(" currentProjectObject.name ", currentProjectObject.name );
+										currentProjectObject.description = $('#editProjectDetail').val();
+										$.ajax({
+										url:'http://localhost:26893/projectsND/'+currentProject,
+										method:'put',
+										//answer data from server:
+										dataType: 'json',
+										//sending data
+										data:{dataObject:JSON.stringify(currentProjectObject)},
+										/*data:JSON.stringify(jsonRoot),*/
+										success:function( data ){
+											console.log("editproject");
+											console.log(data);
+											//return data;
+											updateProjectList();
+											$( "#editProjectForm" ).dialog( "close" );
+										}
+									}); //ajax
+
+								}, //save changes
+			        Cancel: function() {
+
+								$( this ).dialog("close");
+
+					    }
+			      }, //end of buttons
+
+				}); //end new project dialog
+
 			$(document).tooltip({
 					show: {
 	        effect: "slideDown",
@@ -323,11 +376,8 @@ $( "#deleteConfirm" ).dialog({
 			$("#connectionAccordion").accordion({
 				heightStyle: "content"
 			});
-			//$("#addProject").button();
 
-//------------------open newProjectForm----------------------------------------
-
-			 //currentProject=new Project(6,"project7","Das projekt macht nichts, aber um so mehr ordentlich");
+//--------------------------buttons project selection
 
 			$('#addProjectBtn').button().on('click', function(){
 				$("#projectName").val('');
@@ -342,10 +392,81 @@ $( "#deleteConfirm" ).dialog({
 				console.log("delete button clicked");
 			});
 
-			$('#saveProjectBtn').button().on('click', function(){
-				currentDialog="#saveProjectBtn";
-				$( "#saveConfirm" ).dialog( "open" );
+			$('#editProjectBtn').button().on('click', function(){
+				$( "#editProjectForm" ).dialog( "open" );
 			}); //add project button
+
+
+//-------------------NEW PROJECT DIALOG-------------------------------
+newConnectionForm=		$( "#newConnectionForm" ).dialog({
+
+						autoOpen: false,
+						resizable: false,
+						modal: true,
+						title: "Add new Connection",
+			      show: {
+							create: function( event, ui ) {},
+			        effect: "blind",
+			        duration: 1000
+			      },
+			      hide: {
+			        effect: "size",
+			        duration: 1000
+			      },
+						buttons: {
+			        "Create connection": function() {
+								//var newConnectionObject = new Connection($('#connectionName').val(),$('#connectionDetail').val());
+								currentProjectObject.connections.connectionName="Ahoj";
+								currentProjectObject.connections.connectionDescription="Description";
+
+								currentProjectObject.connections.connectionURL="url";
+
+
+							console.log("bevore close");
+							 $( this ).dialog( "close" );
+							 saveCurrentProjectToServer();
+								/*
+								currentDialog="#newProjectForm";
+								$( '#saveConfirm').dialog("open");
+								*/
+			          //$( this ).dialog( "close" );
+								//create code!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+			        },
+			        Cancel: function() {
+
+								$( '#cancelConnectionConfirm').dialog("open");
+
+					    }
+			      }, //end of buttons
+
+				}); //end new project dialog
+
+
+
+
+
+
+
+//--------------------------buttons connection selection
+			$('#addConnectionBtn').button().on('click', function(){
+				$("#connectionName").val('');
+				$("#connectionDetail").val('');
+				$( "#newConnectionForm" ).dialog( "open" );
+			}); //add connection button
+
+			$('#deleteConnectionBtn').button().on('click', function(){
+				console.log("current connection: ",currentConnection);
+				//currentDialog="#deleteConnectionBtn";
+				$( "#deleteConnectionConfirm" ).dialog( "open" );
+				console.log("delete connection button clicked");
+			});
+
+			$('#editConnectionBtn').button().on('click', function(){
+				$( "#editConnectionForm" ).dialog( "open" );
+			}); //add connection button
+
+
+
 		}) //document ready
 	}()); //outer-function
 	</script>
@@ -388,7 +509,7 @@ $( "#deleteConfirm" ).dialog({
     </select>
 	<button id="addProjectBtn">new</button>
 	<button id="deleteProjectBtn">delete</button>
-	<button id="saveProjectBtn">save</button>
+	<button id="editProjectBtn">edit</button>
 </div>
 
 <div class="wrapMainBlock" id="connectionWrap">
@@ -397,15 +518,17 @@ $( "#deleteConfirm" ).dialog({
     </select>
 	<button id="addConnectionBtn">new</button>
 	<button id="deleteConnectionBtn">delete</button>
+	<button id="editConnectionBtn">edit</button>
 	<div id="connectionAccordion">
 		<h3>Request</h3>
 		<div>
-				project template nr. 1
-				project template nr. 1
-				project template nr. 1
+
+				<textarea rows="4" cols="25" id="editRequest" autocomplete="off" value=""></textarea>
+
 		</div>
 		<h3>Response</h3>
 		<div>
+
 				project template nr. 2
 				project template nr. 2
 				project template nr. 2
@@ -414,20 +537,32 @@ $( "#deleteConfirm" ).dialog({
 	</div>
 </div>
 
-<div class="wrapActiveProject">
 
-</div>
 
 <div id="newProjectForm" title="Create new project">
   <label for="projectName">Name: </label><input type="text" id="projectName" maxlength="18" autocomplete="off" value="">
   <label for="projectDetail">Detail: </label><textarea rows="4" cols="25" id="projectDetail" autocomplete="off" value=""></textarea>
 </div>
+<div id="editProjectForm" title="Edit project">
+  <label for="editProjectName">Name: </label><input type="text" id="editProjectName" maxlength="18" autocomplete="off" value="">
+  <label for="editProjectDetail">Detail: </label><textarea rows="4" cols="25" id="editProjectDetail" autocomplete="off" value=""></textarea>
+</div>
+
+
+<div id="newConnectionForm" title="Create new connection">
+  <label for="connectionName">Name: </label><input type="text" id="connectionName" maxlength="18" autocomplete="off" value="">
+  <label for="connectionDetail">Detail: </label><textarea rows="4" cols="25" id="connectionDetail" autocomplete="off" value=""></textarea>
+</div>
+<div id="editConnectionForm" title="Edit connection">
+  <label for="editConnectionName">Name: </label><input type="text" id="editConnectionName" maxlength="18" autocomplete="off" value="">
+  <label for="editConnectionDetail">Detail: </label><textarea rows="4" cols="25" id="editConnectionDetail" autocomplete="off" value=""></textarea>
+</div>
+
+
 <div id="cancelConfirm" >
 	<p>Close dialog without saving?</p>
 </div>
-<div id="saveConfirm" >
-	<p>Are you sure you want to save?</p>
-</div>
+
 <div id="deleteConfirm" >
 	<p>Are you sure you want to delete?</p>
 </div>

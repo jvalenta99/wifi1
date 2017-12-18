@@ -60,8 +60,9 @@ app.get('/projectsND', function( req, res){
       console.log("dataparsed: ",JSON.parse(data));
 
       for(var i=0; i<root.projects.length; i++) {
-        if(root.projects[i].name){
         out.projects[i]={id:i,name:root.projects[i].name,description:root.projects[i].description}
+        if(root.projects[i].name){
+
         }//out.projects[0]={id:7};
         //out.projects[i].name=root.projects[i].name;
         //out.projects[i].description=root.projects[i].description;
@@ -88,9 +89,9 @@ app.get('/projectsND/:id', function( req, res){
       root = JSON.parse(data);
       console.log("dataparsed: ",JSON.parse(data));
 
-        if(root.projects[id].name){
+        //if(root.projects[id].name){
         out=root.projects[id];
-        }//out.projects[0]={id:7};
+        //}//out.projects[0]={id:7};
         //out.projects[i].name=root.projects[i].name;
         //out.projects[i].description=root.projects[i].description;
 
@@ -108,12 +109,12 @@ app.put('/projectsND/:id', function(req, res) {
     console.log("update activated");
     var id = req.params.id;
     console.log("id to update: " + id);
-
+    var receivedProject = JSON.parse(req.body.dataObject);
 
     fs.readFile( "allprojects.json", function(err, data) {
       var root={};
       root = JSON.parse(data);
-      root.projects[id]=JSON.parse(JSON.stringify(data))
+      root.projects[id]=JSON.parse(JSON.stringify(receivedProject))
       console.log("root object after insert: ", root);
 
 

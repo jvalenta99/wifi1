@@ -1,0 +1,65 @@
+$( "#saveConfirm" ).dialog({
+    autoOpen: false,
+    resizable: false,
+    modal: true,
+    title: "Confirm saving",
+    show: {
+      effect: "blind",
+      duration: 1000
+    },
+    hide: {
+      effect: "size",
+      duration: 1000
+    },
+    buttons: {
+      "Yes": function() {
+        switch (currentDialog) {
+          case "#newProjectForm":
+            var newProjectObject = new Project($('#projectName').val(),$('#projectDetail').val());
+              $.ajax({
+              url:'http://localhost:26893/projectsND',
+              method:'post',
+              //answer data from server:
+              dataType: 'json',
+              //sending data
+              data:{dataObject:JSON.stringify(newProjectObject)},
+              /*data:JSON.stringify(jsonRoot),*/
+              success:function( data ){
+                console.log("saveNewproject");
+                console.log(data);
+                //return data;
+                $(currentDialog).dialog("close" );
+              }
+            }); //ajax
+
+
+            case "#saveProjectBtn":
+              $.ajax({
+                url:'http://localhost:26893/projectsND/'+currentProject,
+                method:'put',
+                //answer data from server:
+                dataType:'json',
+                //sending data
+                data:{dataObject:JSON.stringify(currentProjectObject
+                )},
+                /*data:JSON.stringify(jsonRoot),*/
+                success:function( data ){
+
+                  console.log("Saved project data: ",data);
+                  //return data;
+                }
+              }); //ajax
+
+
+
+        } //switch end of
+        //$(currentDialog).dialog("close" );
+        $( this ).dialog( "close" );
+        updateProjectList();
+
+      },
+      "No": function() {
+        $( this ).dialog( "close" );
+      }
+    } //end of buttons
+}); //end new project dialog

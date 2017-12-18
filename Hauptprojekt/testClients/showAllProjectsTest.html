@@ -1,0 +1,108 @@
+<!doctype html>
+<html>
+<head>
+	<title></title>
+	<meta charset="utf-8">
+	<title>Frontend backend connector</title>
+	<link rel="stylesheet" href="jquery-ui-1.12.1.custom\jquery-ui.css"/>
+	<script src="jquery-ui-1.12.1.custom\	external\jquery\jquery.js"></script>
+	<script src="jquery-ui-1.12.1.custom\jquery-ui.js"></script>
+	<script>
+	;(function() {
+		"use strict";
+			$( document ).ready( function() {
+
+        $.ajax({
+    			url:'http://localhost:26893/projectsND/3',
+    			method:'get',
+    			dataType: 'json',
+    			success:function( data ){
+
+    					console.log(" ajax back data for edit: ", data);
+    					//console.log(data.projects);
+                $('#projectNameEdit').val(data.name);
+                $('#projectDescrioptionEdit').val(data.description);
+
+
+              } // Success
+
+    		}); //ajax
+
+        $.ajax({
+    			url:'http://localhost:26893/projectsND',
+    			method:'get',
+    			dataType: 'json',
+    			success:function( data ){
+
+    					console.log(" ajax back data", data);
+    					//console.log(data.projects);
+
+    					for (var i=0;i<data.projects.length;i++){
+
+    						$('<p>')
+    						.html(data.projects[i].name + ", " +  data.projects[i].id +
+                  ", "  + data.projects[i].description)
+                  .appendTo('#wrapShowProjectsList');
+    						} //for
+              } // Success
+
+    		}); //ajax
+
+        $('#delete').on('click', function(){
+
+          $.ajax({
+          url:'http://localhost:26893/projectsND/0',
+          method:'delete',
+          dataType: 'json',
+          success:function( data ){
+
+
+            console.log("dataDeleted message:");
+            console.log(data);
+            //return data;
+          }
+        }); //ajax
+
+      }); //on click listener delete
+
+      $('#editProjectBtn').on('click', function(){
+
+        $.ajax({
+        url:'http://localhost:26893/projectsND/3',
+        method:'put',
+        dataType: 'json',
+        success:function( data ){
+
+          console.log("dataedit  message:");
+          console.log(data);
+          //return data;
+        }
+      }); //ajax
+
+    }); //on click listener edit project
+
+
+		}) //document ready
+	}()); //outer-function
+	</script>
+	<style>
+
+	</style>
+</head>
+<body>
+  <div id="wrapEditProject">
+    name:<input type="text" name="" value="start" id="projectNameEdit">
+    description:<input type="text" name="" value="" id="projectDescrioptionEdit">
+    <button type="button" name="button" id="editProjectBtn">edit</button>
+  </div>
+  <div class="">
+  <input type="text" name="" value=""><button type="button" id="delete">delete</button>
+  <div id="wrapShowProjectsList">
+
+  </div>
+  <div class="">
+
+  </div>
+
+</body>
+</html>
