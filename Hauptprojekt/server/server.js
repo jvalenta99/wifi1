@@ -38,7 +38,7 @@ app.post( '/projectsND', function( req, res) {
     root.projects.push(JSON.parse(req.body.dataObject));
     res.json({projectcreated: 'yes'});
     res.end();
-    console.log("root object after insert: ", root);
+    //console.log("root object after insert: ", root);
 
 
     //persist allprojects in root from to json file
@@ -57,7 +57,7 @@ app.get('/projectsND', function( req, res){
       var out={ projects:projectsArr };
 
       root = JSON.parse(data);
-      console.log("dataparsed: ",JSON.parse(data));
+        //console.log("dataparsed: ",JSON.parse(data));
 
       for(var i=0; i<root.projects.length; i++) {
         out.projects[i]={id:i,name:root.projects[i].name,description:root.projects[i].description}
@@ -67,7 +67,7 @@ app.get('/projectsND', function( req, res){
         //out.projects[i].name=root.projects[i].name;
         //out.projects[i].description=root.projects[i].description;
       }
-      console.log("outobject: ", out);
+      //console.log("outobject: ", out);
 
       //res.json({out: JSON.stringify(out)});
       res.send( JSON.stringify(out) );
@@ -87,7 +87,7 @@ app.get('/projectsND/:id', function( req, res){
       var out={};
 
       root = JSON.parse(data);
-      console.log("dataparsed: ",JSON.parse(data));
+      //console.log("dataparsed: ",JSON.parse(data));
 
         //if(root.projects[id].name){
         out=root.projects[id];
@@ -95,13 +95,17 @@ app.get('/projectsND/:id', function( req, res){
         //out.projects[i].name=root.projects[i].name;
         //out.projects[i].description=root.projects[i].description;
 
-      console.log("outobject: ", out);
+      //console.log("outobject: ", out);
 
       //res.json({out: JSON.stringify(out)});
       res.send( JSON.stringify(out) );
       res.end();
     }); //read file
 });
+
+
+
+
 
 //----------------------------update (overvrite) one project (with id parameter)---------------------------
 
@@ -114,13 +118,14 @@ app.put('/projectsND/:id', function(req, res) {
     fs.readFile( "allprojects.json", function(err, data) {
       var root={};
       root = JSON.parse(data);
+      console.log("id before update change", id);
       root.projects[id]=JSON.parse(JSON.stringify(receivedProject))
-      console.log("root object after insert: ", root);
+      //console.log("root object after insert: ", root);
 
 
       //persist allprojects in root from to json file
       fs.writeFile( "allprojects.json",JSON.stringify(root),function(){
-        res.json({updated: 'yes'});
+        res.json({updated: root});
         res.end();
         console.log("Project updated");
       }); //write file
@@ -140,7 +145,7 @@ app.delete('/projectsND/:id', function(req, res) {
       var root={};
       root = JSON.parse(data);
       root.projects.splice(id,1);
-      console.log("root object after insert: ", root);
+      //console.log("root object after insert: ", root);
 
 
       //persist allprojects in root from to json file
@@ -148,6 +153,34 @@ app.delete('/projectsND/:id', function(req, res) {
         res.json({deleted: 'yes'});
         res.end();
         console.log("Project deleted");
+      }); //write file
+    }); //readFile
+    //res.send('Successfully deleted product!');
+});
+
+//----------------------------delete one connection (with id parameter)---------------------------
+app.post('/projectsND/:id', function(req, res) {
+    console.log("delete of connection activated");
+    var projectID = req.params.id; //connection id
+    var connectionID =JSON.parse(req.body.conID);
+    console.log( "received projectID: ", projectID );
+    console.log("connection id to delete: " + connectionID);
+
+
+    fs.readFile( "allprojects.json", function(err, data) {
+      var root={};
+      root = JSON.parse(data);
+      console.log( "received projectID: ", projectID );
+      console.log("connectionID bevore splice: ",connectionID );
+      root.projects[projectID].connections.splice(connectionID,1);
+      //console.log("root object after insert: ", root);
+
+
+      //persist allprojects in root from to json file
+      fs.writeFile( "allprojects.json",JSON.stringify(root),function(){
+        res.json({connectionDeleted: connectionID});
+        res.end();
+        console.log("Project deleted",connectionID);
       }); //write file
     }); //readFile
     //res.send('Successfully deleted product!');
