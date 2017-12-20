@@ -331,7 +331,7 @@ $( "#deleteConnectionConfirm" ).dialog({
 //xxxxxxxxxxxxxxxxxxxxxxxxxxxxxx   end delete confirm   xxxxxxxxxxxxxxxxxxxxxxxxxxxx
 
 //------------------Edit PROJECT DIALOG-------------------------------
-var editProjectForm2=		$( "#editProjectForm" ).dialog({
+editProjectForm=		$( "#editProjectForm" ).dialog({
 						open: function( event, ui ) {
 							$('#editProjectName').val(currentProjectObject.name);
 							$('#editProjectDetail').val(currentProjectObject.description);
