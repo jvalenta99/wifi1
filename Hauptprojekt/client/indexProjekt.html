@@ -30,7 +30,7 @@
 							connectionDetail:"",
 							request:"",
 							response:"",
-							settings:"",
+							connectionSettings:""
 						});
 				}
 				//jQuery UI set css classes
@@ -406,6 +406,45 @@ var editProjectForm2=		$( "#editProjectForm" ).dialog({
 				$( "#editProjectForm" ).dialog( "open" );
 			}); //add project button
 
+			$('#printProjectBtn').button().on('click', function(){
+				$('#printproject').html("");
+				$("<h2>").html("Project report").appendTo('#printproject');
+				$("<br>").appendTo('#printproject');
+				var temp =$("#chooseProject  option:selected").text();
+				$("<h4>").html("Project name: " + temp).appendTo('#printproject');
+
+				var temp =$("#chooseProject  option:selected").attr("title");
+				$("<h4>").html("Project description: " + temp).appendTo('#printproject');
+				//$("h4").html($(#chooseProject).val());
+				$("<br>").appendTo('#printproject');
+				$("<h3>").html("Connections:").appendTo('#printproject');
+				$("<br>").appendTo('#printproject');
+
+
+
+				for (var i=0;i<currentProjectObject.connections.length;i++){
+					$("<h4>").
+					html("Connection name: " + currentProjectObject.connections[i].connectionName)
+					.appendTo('#printproject');
+					$("<h4>").
+					html("Connection detail: " + currentProjectObject.connections[i].connectionDetail)
+					.appendTo('#printproject');
+					$("<h4>").
+					html("Request: " + currentProjectObject.connections[i].request)
+					.appendTo('#printproject');
+					$("<h4>").
+					html("Response: " + currentProjectObject.connections[i].response)
+					.appendTo('#printproject');
+					$("<h4>").
+					html("Connection settings: " + currentProjectObject.connections[i].connectionSettings)
+					.appendTo('#printproject');
+					$("<br>").appendTo('#printproject');
+
+				} //for
+
+				window.print();
+			}); //add project button
+
 //-------------------NEW PROJECT DIALOG-------------------------------
 newConnectionForm=		$( "#newConnectionForm" ).dialog({
 
@@ -496,6 +535,12 @@ newConnectionForm=		$( "#newConnectionForm" ).dialog({
 	margin-bottom: 10px;
 	}
 
+	h2 {
+		text-align: center;
+		font-weight: bold;
+
+	}
+
 	body > div:first-of-type {
 		padding:0;
 		text-align: center;
@@ -514,11 +559,25 @@ newConnectionForm=		$( "#newConnectionForm" ).dialog({
       margin:  0  0 15px 0;
 			font-weight: bold;
     }
-	  .overflow { height: 200px; }
+	.overflow { height: 200px; }
+
+#printproject {
+	display:none;
+	margin: 30px;
+}
+@media print {
+	#notprint {display:none;}
+	#printproject {
+		display:block;
+
+	}
+
+}
 
 	</style>
 </head>
 <body>
+<div id="notprint">
 <div class="wrapMainBlock">
 	<h1>API DOC</h1>
 </div>
@@ -530,6 +589,7 @@ newConnectionForm=		$( "#newConnectionForm" ).dialog({
 	<button id="addProjectBtn">new</button>
 	<button id="deleteProjectBtn">delete</button>
 	<button id="editProjectBtn">edit</button>
+	<button id="printProjectBtn">print project</button>
 </div>
 
 <div class="wrapMainBlock" id="connectionWrap">
@@ -587,5 +647,7 @@ newConnectionForm=		$( "#newConnectionForm" ).dialog({
 <div id="deleteConnectionConfirm" >
 	<p>Are you sure you want to delete?</p>
 </div>
+</div>
+<div id="printproject"></div>
 </body>
 </html>

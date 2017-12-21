@@ -1,0 +1,653 @@
+<!doctype html>
+<html>
+<head>
+	<title></title>
+	<meta charset="utf-8">
+	<title>Frontend backend connector</title>
+	<link rel="stylesheet" href="jquery-ui-1.12.1.custom\jquery-ui.css"/>
+	<script src="jquery-ui-1.12.1.custom\	external\jquery\jquery.js"></script>
+	<script src="jquery-ui-1.12.1.custom\jquery-ui.js"></script>
+	<script>
+	;(function() {
+		"use strict";
+			$( document ).ready( function() {
+				var projectsArr=[];
+				var projectList;
+				var editProjectID;
+				var currentProject=0;  //id
+				var currentProjectObject;
+				var currentDialog;
+				var newProjectForm;
+				var newConnectionForm;
+				var currentConnection=0; //chosen connection in connection combo - id of array
+
+//---------------------CLASS PROJECT----------------------
+				var Project=function (name,description){
+					this.name=name;
+					this.description=description;
+					this.connections=[];
+					this.connections.push({connectionName:"Connection 1",
+							connectionDetail:"",
+							request:"",
+							response:"",
+							connectionSettings:""
+						});
+				}
+				//jQuery UI set css classes
+
+				$('input').addClass("ui-widget ui-widget-content ui-corner-all");
+				$('textarea').addClass("ui-widget  ui-corner-all");
+				$('label').addClass("ui-widget ");
+
+
+
+
+//------------------CHOOSE PROJECT-----------------------------------
+var updateProjectList = function (){
+		$.ajax({
+			url:'http://localhost:26893/projectsND',
+			method:'get',
+			//answer data from server:
+			dataType: 'json',
+			success:function( data ){
+					//set combo on start
+					$('#chooseProject option').remove();
+					for (var i=0;i<data.projects.length;i++){
+
+
+						$('<option>')
+						.html(data.projects[i].name)
+						.attr("value",data.projects[i].id)
+						.attr("title",data.projects[i].description)
+						.appendTo('#chooseProject');
+					}
+
+					//first time initialize current Project
+					$.ajax({
+						url:'http://localhost:26893/projectsND/'+currentProject,
+						method:'get',
+						dataType: 'json',
+						success:function( data ){
+
+							currentProjectObject=JSON.parse(JSON.stringify(data));
+							showProjectDetail();
+						}
+					}); //ajax
+
+
+
+					$('#chooseProject').selectmenu({
+						change: function( event, data ) {
+							currentProject=data.item.value;
+							currentConnection=0;
+							//receive currentProjectObject
+							$.ajax({
+								url:'http://localhost:26893/projectsND/'+currentProject,
+								method:'get',
+								//answer data from server:
+								dataType: 'json',
+								//sending data
+								success:function( data ){
+
+									currentProjectObject=JSON.parse(JSON.stringify(data));
+									//set current project to combo:
+									showProjectDetail();
+									//return data;
+								}
+							}); //ajax
+						}  //change
+
+					});  //$('#chooseProject').selectmenu({
+
+					$('#chooseProject').val(currentProject);
+
+					$('#chooseProject').selectmenu( "refresh" );
+					$('#chooseProject').selectmenu( "menuWidget" )
+					.addClass( "overflow" ); //select menu
+
+			} //success
+		}); //ajax
+
+} //update project list
+
+updateProjectList();
+
+//----------------------save current project object to server--------------
+
+var saveCurrentProjectToServer = function () {
+
+	$.ajax({
+		url:'http://localhost:26893/projectsND/'+currentProject,
+		method:'put',
+		dataType: 'json',
+		data:{dataObject:JSON.stringify(currentProjectObject)},
+		success:function( data ){
+			showProjectDetail();
+		}
+	}); //
+}
+
+//----------------------save current project object to server--------------
+
+var saveCurrentProjectToServerWithoutRefresh = function () {
+
+	$.ajax({
+		url:'http://localhost:26893/projectsND/'+currentProject,
+		method:'put',
+		dataType: 'json',
+		data:{dataObject:JSON.stringify(currentProjectObject)},
+		success:function( data ){
+		}
+	}); //
+}
+
+//--------------------choose connection-----------------------------
+
+var showProjectDetail = function (){
+
+		//initialize Connection combobox
+		$('#chooseConnection option').remove();
+		for (var i=0;i<currentProjectObject.connections.length;i++){
+			$('<option>')
+			.html(currentProjectObject.connections[i].connectionName)
+			.attr("value",i)
+			.attr("title",currentProjectObject.connections[i].connectionDetail)
+			.appendTo('#chooseConnection');
+		} //for
+
+		$('#editRequest').val(currentProjectObject.connections[currentConnection].request);
+		$('#editResponse').val(currentProjectObject.connections[currentConnection].response);
+		$('#connectionNameDes').val(currentProjectObject.connections[currentConnection].connectionName);
+		$('#connectionDetailDes').val(currentProjectObject.connections[currentConnection].connectionDetail);
+		$('#editSettings').val(currentProjectObject.connections[currentConnection].connectionSettings);
+
+		$('#chooseConnection').selectmenu({
+      change: function( event, data ) {
+				currentConnection=data.item.value;
+				//inicialisation2
+				$('#editRequest').val(currentProjectObject.connections[currentConnection].request);
+				$('#editResponse').val(currentProjectObject.connections[currentConnection].response);
+				$('#connectionNameDes').val(currentProjectObject.connections[currentConnection].connectionName);
+				$('#connectionDetailDes').val(currentProjectObject.connections[currentConnection].connectionDetail);
+				$('#editSettings').val(currentProjectObject.connections[currentConnection].connectionSettings);
+      }
+		}).selectmenu( "menuWidget" )
+    .addClass( "overflow" ); //select menu
+
+		$('#chooseConnection').val(currentConnection);
+		$('#chooseConnection').selectmenu( "refresh" );
+
+} //show project detail
+
+//-------------------NEW PROJECT DIALOG-------------------------------
+newProjectForm=		$( "#newProjectForm" ).dialog({
+
+						autoOpen: false,
+						resizable: false,
+						modal: true,
+						title: "Add new project",
+			      show: {
+							create: function( event, ui ) {},
+			        effect: "blind",
+			        duration: 1000
+			      },
+			      hide: {
+			        effect: "size",
+			        duration: 1000
+			      },
+						buttons: {
+			        "Create project": function() {
+								var newProjectObject = new Project($('#projectName').val(),$('#projectDetail').val());
+								$.ajax({
+								url:'http://localhost:26893/projectsND',
+								method:'post',
+								//answer data from server:
+								dataType: 'json',
+								//sending data
+								data:{dataObject:JSON.stringify(newProjectObject)},
+								/*data:JSON.stringify(jsonRoot),*/
+								success:function( data ){
+									//return data;
+									$('#newProjectForm').dialog("close" );
+								}
+							}); //ajax
+							 $( this ).dialog( "close" );
+							 updateProjectList();
+			        },
+			        Cancel: function() {
+								$( '#cancelConfirm').dialog("open");
+					    }
+			      }, //end of buttons
+
+				}); //end new project dialog
+//-------------------CANCEL CONFIRM DIALOG-------------------------------
+	$( "#cancelConfirm" ).dialog({
+			      autoOpen: false,
+						resizable: false,
+						modal: true,
+						title: "Cancel confirmation",
+			      show: {
+			        effect: "blind",
+			        duration: 1000
+			      },
+			      hide: {
+			        effect: "size",
+			        duration: 1000
+			      },
+						buttons: {
+			        "Yes": function() {
+								$(currentDialog).dialog("close" );
+			          $( this ).dialog( "close" );
+								//create code cancel without saving!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+			        },
+			        "No": function() {
+								$( this ).dialog( "close" );
+					    }
+			      } //end of buttons
+				}); //end new project dialog
+
+//----------------------------delete confirmation---------------------------------
+$( "#deleteConfirm" ).dialog({
+		autoOpen: false,
+		resizable: false,
+		modal: true,
+		title: "Confirm deleting",
+		show: {
+			effect: "blind",
+			duration: 1000
+		},
+		hide: {
+			effect: "size",
+			duration: 1000
+		},
+		buttons: {
+			"Yes": function() {
+
+							$.ajax({
+							url:'http://localhost:26893/projectsND/'+currentProject,
+							method:'delete',
+							//dataType: 'json',
+							success:function( data ){
+								//$('#chooseProject').selectmenu(' refresh ');
+								//updateProjectList();
+								$( "#deleteConfirm" ).dialog( "close" );
+								updateProjectList();
+								//return data;
+							}
+						}); //ajax
+			},
+			"No": function() {
+				$( this ).dialog( "close" );
+			}
+		} //end of buttons
+}); //end new project dialog
+
+
+//----------------------------delete confirmation---------------------------------
+
+$( "#deleteConnectionConfirm" ).dialog({
+		autoOpen: false,
+		resizable: false,
+		modal: true,
+		title: "Confirm deleting",
+		show: {
+			effect: "blind",
+			duration: 1000
+		},
+		hide: {
+			effect: "size",
+			duration: 1000
+		},
+		buttons: {
+			"Yes": function() {
+
+								$.ajax({
+								url:'http://localhost:26893/projectsND/'+currentProject,
+								method:'post',
+								//answer data from server:
+								dataType: 'json',
+
+								data:{conID:JSON.stringify(currentConnection)},
+								//sending data
+								//data:{dataObject:JSON.stringify(newProjectObject)},
+								/*data:JSON.stringify(jsonRoot),*/
+								success:function( data ){
+									//$('#chooseProject').selectmenu(' refresh ');
+									//updateProjectList();
+									$('#deleteConnectionConfirm' ).dialog( "close" );
+									currentConnection=0;
+									//dodelat
+									 //showProjectDetail();
+									updateProjectList();
+								}
+							}); //ajax
+			},
+			"No": function() {
+				$( this ).dialog( "close" );
+			}
+		} //end of buttons
+}); //end new project dialog
+
+//xxxxxxxxxxxxxxxxxxxxxxxxxxxxxx   end delete confirm   xxxxxxxxxxxxxxxxxxxxxxxxxxxx
+
+//------------------Edit PROJECT DIALOG-------------------------------
+var editProjectForm2=		$( "#editProjectForm" ).dialog({
+						open: function( event, ui ) {
+							$('#editProjectName').val(currentProjectObject.name);
+							$('#editProjectDetail').val(currentProjectObject.description);
+						},
+
+						autoOpen: false,
+						resizable: false,
+						modal: true,
+						title: "Add edit project",
+			      show: {
+							create: function( event, ui ) {
+
+							},
+			        effect: "blind",
+			        duration: 1000
+			      },
+			      hide: {
+			        effect: "size",
+			        duration: 1000
+			      },
+						buttons: {
+			        "Save changes": function() {
+										//var editProjectObject = new Project($('#projectName').val(),$('#projectDetail').val());
+										currentProjectObject.name = $('#editProjectName').val();
+										currentProjectObject.description = $('#editProjectDetail').val();
+										$.ajax({
+										url:'http://localhost:26893/projectsND/'+currentProject,
+										method:'put',
+										dataType: 'json',
+										data:{dataObject:JSON.stringify(currentProjectObject)},
+										success:function( data ){
+											//return data;
+											updateProjectList();
+											$( "#editProjectForm" ).dialog( "close" );
+										}
+									}); //ajax
+								}, //save changes
+			        Cancel: function() {
+
+								$( this ).dialog("close");
+
+					    } //cancel
+			      }, //end of buttons
+
+				}); //end new project dialog
+
+			$(document).tooltip({
+					show: {
+	        effect: "slideDown",
+	        delay: 250
+	      }
+	    });
+
+			$("#connectionAccordion").accordion({
+				heightStyle: "content"
+			});
+
+//--------------------------buttons project selection
+
+			$('#addProjectBtn').button().on('click', function(){
+				$("#projectName").val('');
+				$("#projectDetail").val('');
+				$( "#newProjectForm" ).dialog( "open" );
+			}); //add project button
+
+			$('#deleteProjectBtn').button().on('click', function(){
+				currentDialog="#deleteProjectBtn";
+				$( "#deleteConfirm" ).dialog( "open" );
+			});
+
+			$('#editProjectBtn').button().on('click', function(){
+				$( "#editProjectForm" ).dialog( "open" );
+			}); //add project button
+
+			$('#printProjectBtn').button().on('click', function(){
+				$('#printproject').html("");
+				$("<h2>").html("Project report").appendTo('#printproject');
+				$("<br>").appendTo('#printproject');
+				var temp =$("#chooseProject  option:selected").text();
+				$("<h4>").html("Project name: " + temp).appendTo('#printproject');
+
+				var temp =$("#chooseProject  option:selected").attr("title");
+				$("<h4>").html("Project description: " + temp).appendTo('#printproject');
+				//$("h4").html($(#chooseProject).val());
+				$("<br>").appendTo('#printproject');
+				$("<h3>").html("Connections:").appendTo('#printproject');
+				$("<br>").appendTo('#printproject');
+
+
+
+				for (var i=0;i<currentProjectObject.connections.length;i++){
+					$("<h4>").
+					html("Connection name: " + currentProjectObject.connections[i].connectionName)
+					.appendTo('#printproject');
+					$("<h4>").
+					html("Connection detail: " + currentProjectObject.connections[i].connectionDetail)
+					.appendTo('#printproject');
+					$("<h4>").
+					html("Request: " + currentProjectObject.connections[i].request)
+					.appendTo('#printproject');
+					$("<h4>").
+					html("Response: " + currentProjectObject.connections[i].response)
+					.appendTo('#printproject');
+					$("<h4>").
+					html("Connection settings: " + currentProjectObject.connections[i].connectionSettings)
+					.appendTo('#printproject');
+					$("<br>").appendTo('#printproject');
+
+				} //for
+
+				window.print();
+			}); //add project button
+
+//-------------------NEW PROJECT DIALOG-------------------------------
+newConnectionForm=		$( "#newConnectionForm" ).dialog({
+
+						autoOpen: false,
+						resizable: false,
+						modal: true,
+						title: "Add new Connection",
+			      show: {
+							create: function( event, ui ) {},
+			        effect: "blind",
+			        duration: 1000
+			      },
+			      hide: {
+			        effect: "size",
+			        duration: 1000
+			      },
+						buttons: {
+			        "Create connection": function() {
+								//var newConnectionObject = new Connection($('#connectionName').val(),$('#connectionDetail').val());
+								//currentProjectObject.connections.push({connectionName:"Ahoj",connectionURL:"httptest"});
+								//currentProjectObject.connections.connectionDescription="Description";
+
+								//currentProjectObject.connections.connectionURL="url";
+								currentProjectObject.connections.push({connectionName:$("#connectionName").val(),connectionDetail:$("#connectionDetail").val()});
+
+							 $( this ).dialog( "close" );
+							 saveCurrentProjectToServer();
+								/*
+								currentDialog="#newProjectForm";
+								$( '#saveConfirm').dialog("open");
+								*/
+			          //$( this ).dialog( "close" );
+								//create code!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+			        },
+			        Cancel: function() {
+
+								$( '#cancelConnectionConfirm').dialog("open");
+					    }
+			      }, //end of buttons
+				}); //end new project dialog
+//--------------------------buttons connection selection
+			$('#addConnectionBtn').button().on('click', function(){
+				$("#connectionName").val('');
+				$("#connectionDetail").val('');
+				$( "#newConnectionForm" ).dialog( "open" );
+			}); //add connection button
+
+			$('#deleteConnectionBtn').button().on('click', function(){
+					$( "#deleteConnectionConfirm" ).dialog( "open" );
+			});
+
+			$('#editRequest').on('focusout', function(){
+				currentProjectObject.connections[currentConnection].request=$(this).val();
+				saveCurrentProjectToServerWithoutRefresh();
+			});
+
+			$('#editResponse').on('focusout', function(){
+				currentProjectObject.connections[currentConnection].response=$(this).val();
+				saveCurrentProjectToServerWithoutRefresh();
+			});
+
+			$('#connectionNameDes').on('focusout', function(){
+				currentProjectObject.connections[currentConnection].connectionName=$(this).val();
+				saveCurrentProjectToServer();
+			});
+
+			$('#connectionDetailDes').on('focusout', function(){
+				currentProjectObject.connections[currentConnection].connectionDetail=$(this).val();
+				saveCurrentProjectToServerWithoutRefresh();
+			});
+
+			$('#editSettings').on('focusout', function(){
+				currentProjectObject.connections[currentConnection].connectionSettings=$(this).val();
+				saveCurrentProjectToServerWithoutRefresh();
+			});
+
+		}) //document ready
+	}()); //outer-function
+	</script>
+	<style>
+
+	h1	{
+	color: #CB842E;
+	font-family: arial, sans-serif;
+	font-size: 40px;
+	font-weight: bold;
+	margin-top: 10px;
+	margin-bottom: 10px;
+	}
+
+	h2 {
+		text-align: center;
+		font-weight: bold;
+
+	}
+
+	body > div:first-of-type {
+		padding:0;
+		text-align: center;
+	}
+
+	.wrapMainBlock, .wrapActiveProject {
+		margin: 5%;
+		border-radius: 10px;
+		padding: 10px;
+		background: #F1F1F1;
+		border: 1px solid #F6F1E6;
+	}
+
+	label {
+      display: block;
+      margin:  0  0 15px 0;
+			font-weight: bold;
+    }
+	.overflow { height: 200px; }
+
+#printproject {
+	display:none;
+	margin: 30px;
+}
+@media print {
+	#notprint {display:none;}
+	#printproject {
+		display:block;
+
+	}
+
+}
+
+	</style>
+</head>
+<body>
+<div id="notprint">
+<div class="wrapMainBlock">
+	<h1>API DOC</h1>
+</div>
+
+<div class="wrapMainBlock">
+	<label for="chooseProject">Select a project: </label>
+    <select name="chooseProject" id="chooseProject">
+    </select>
+	<button id="addProjectBtn">new</button>
+	<button id="deleteProjectBtn">delete</button>
+	<button id="editProjectBtn">edit</button>
+	<button id="printProjectBtn">print project</button>
+</div>
+
+<div class="wrapMainBlock" id="connectionWrap">
+	<label for="chooseConnection">Select connection: </label>
+    <select name="chooseConnection" id="chooseConnection">
+    </select>
+	<button id="addConnectionBtn">new</button>
+	<button id="deleteConnectionBtn">delete</button><br><br>
+
+	<div id="connectionAccordion">
+
+		<h3>Description</h3>
+			<div>
+				<label for="connectionNameDes">Connection name: </label><input type="text" id="connectionNameDes" maxlength="18" autocomplete="off" value=""><br><br>
+				<label for="connectionDetailDes">Connection detail: </label><textarea rows="4" cols="50" id="connectionDetailDes" autocomplete="off" value=""></textarea>
+			</div>
+			<h3>Settings list</h3>
+				<div>
+						<textarea rows="4" cols="50" id="editSettings" autocomplete="off" value=""></textarea>
+				</div>
+
+		<h3>Request</h3>
+			<div>
+					<textarea rows="4" cols="50" id="editRequest" autocomplete="off" value=""></textarea>
+			</div>
+		<h3>Response</h3>
+			<div>
+					<textarea rows="4" cols="50" id="editResponse" autocomplete="off" value=""></textarea>
+			</div>
+
+	</div>
+</div>
+
+<div id="newProjectForm" title="Create new project">
+  <label for="projectName">Name: </label><input type="text" id="projectName" maxlength="18" autocomplete="off" value="">
+  <label for="projectDetail">Detail: </label><textarea rows="4" cols="25" id="projectDetail" autocomplete="off" value=""></textarea>
+</div>
+<div id="editProjectForm" title="Edit project">
+  <label for="editProjectName">Name: </label><input type="text" id="editProjectName" maxlength="18" autocomplete="off" value="">
+  <label for="editProjectDetail">Detail: </label><textarea rows="4" cols="25" id="editProjectDetail" autocomplete="off" value=""></textarea>
+</div>
+
+<div id="newConnectionForm" title="Create new connection">
+  <label for="connectionName">Connection name: </label><input type="text" id="connectionName" maxlength="18" autocomplete="off" value="">
+  <label for="connectionDetail">Connection detail: </label><textarea rows="4" cols="25" id="connectionDetail" autocomplete="off" value=""></textarea>
+</div>
+
+<div id="cancelConfirm" >
+	<p>Close dialog without saving?</p>
+</div>
+
+<div id="deleteConfirm" >
+	<p>Are you sure you want to delete?</p>
+</div >
+<div id="deleteConnectionConfirm" >
+	<p>Are you sure you want to delete?</p>
+</div>
+</div>
+<div id="printproject"></div>
+</body>
+</html>

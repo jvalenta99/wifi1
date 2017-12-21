@@ -1,0 +1,57 @@
+<!doctype html>
+<html>
+<head>
+	<title></title>
+	<meta charset="utf-8">
+  <script src="wifi.funktionen.js"></script>
+	<script>
+  window.onload = function() {
+    var i, html = '', className;
+    for ( i=1; i<=100; i+=1 ) {
+      // wiederholt sich
+/*
+			if ( i % 2 == 0 ) {
+				  e( 'ausgabe' ).innerHTML += '<div class="grau">'+i+'</div>';
+			} else {
+			    e( 'ausgabe' ).innerHTML += '<div>'+i+'</div>';
+			}
+*/
+		/*	if ( i % 2 == 0 ) {
+					html += '<div class="grau">'+i+'</div>';
+			} else {
+					html += '<div>'+i+'</div>';
+			} */
+
+				/*if ( i % 2 == 0 ) {
+						className = 'grau';
+				} else {
+						className = '';
+				}*/
+				/*
+				className = (i % 2 == 0) ? 'grau' : '';
+			  html += '<div class="' + className + '">' + i + '</div>';
+				*/
+
+				html += '<div class="' + (i % 2 == 0 ? 'grau' : '' ) + '">' + i + '</div>';
+
+    }
+
+		e( 'ausgabe' ).innerHTML = html;
+  }
+
+	</script>
+	<style>
+  div > div {
+    display:inline-block; width:50px; height:50px; border:1px solid #000; margin:10px;
+  }
+
+  /*div > div:nth-child(2n) { background:#aaa; }*/
+	.grau { background:#aaa; }
+
+	</style>
+</head>
+<body>
+<div id="ausgabe"></div>
+
+</body>
+</html>
